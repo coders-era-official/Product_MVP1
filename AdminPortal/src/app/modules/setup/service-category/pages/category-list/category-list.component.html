@@ -1,0 +1,26 @@
+<div class="page-shell">
+  <div class="page-shell__top">
+    <div>
+      <button type="button" class="btn btn-outline" (click)="goBack()">← Back</button>
+      <h1>Service Categories</h1>
+      <p>{{ categories.length }} categories available</p>
+    </div>
+  </div>
+
+  <div class="cards-grid">
+    <article class="category-card at-card" *ngFor="let category of categories">
+      <div class="card-top">
+        <span class="number-badge">#{{ category.categoryNumber }}</span>
+        <span class="status-badge" [class.active]="category.status === 'Active'" [class.inactive]="category.status === 'Inactive'">
+          {{ category.status }}
+        </span>
+      </div>
+      <h2>{{ category.categoryName }}</h2>
+      <p>{{ category.description }}</p>
+      <div class="meta">{{ category.createdAt | date: 'mediumDate' }}</div>
+      <button type="button" class="btn btn-secondary" (click)="toggle(category)">
+        {{ category.status === 'Active' ? 'Set Inactive' : 'Set Active' }}
+      </button>
+    </article>
+  </div>
+</div>

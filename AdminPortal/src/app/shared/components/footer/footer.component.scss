@@ -1,0 +1,87 @@
+@use 'mixins' as *;
+
+.footer {
+  background: linear-gradient(180deg, #ffffff 0%, #f4f9fd 100%);
+  border-top: 1px solid var(--border);
+  margin-top: auto;
+}
+
+.footer__grid {
+  @include container;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  padding-block: 3rem;
+
+  @media (min-width: 768px) {
+    grid-template-columns: 2fr 1fr 1fr;
+  }
+}
+
+.footer__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.footer__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.footer__desc {
+  color: var(--text-secondary);
+  max-width: 28rem;
+  margin: 0;
+  line-height: 1.65;
+}
+
+.footer__heading {
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin: 0 0 1rem;
+}
+
+.footer__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.footer__list a {
+  color: var(--text-primary);
+}
+
+.footer__contact {
+  margin: 0 0 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+}
+
+.footer__bar {
+  border-top: 1px solid var(--border);
+  padding: 1rem 1.5rem;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.footer__bar p {
+  margin: 0;
+}

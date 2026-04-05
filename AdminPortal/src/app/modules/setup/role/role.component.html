@@ -1,0 +1,22 @@
+<div class="master-page">
+  <header class="master-page__header">
+    <h1>Role Master</h1>
+    <p>Create permission-driven roles or review the ones already defined.</p>
+  </header>
+
+  <div class="master-page__grid">
+    <article class="master-card" role="button" tabindex="0" (click)="navigate('form')" (keydown.enter)="navigate('form')">
+      <span class="master-card__icon">🔐</span>
+      <h2>Create Role</h2>
+      <p>Define role names, codes, permissions, and activation status.</p>
+      <span class="master-card__cta">Open Form →</span>
+    </article>
+
+    <article class="master-card" role="button" tabindex="0" (click)="navigate('list')" (keydown.enter)="navigate('list')">
+      <span class="master-card__icon">📋</span>
+      <h2>View Roles</h2>
+      <p>Search, review, and toggle the roles available for customer assignments.</p>
+      <span class="master-card__cta">View List →</span>
+    </article>
+  </div>
+</div>

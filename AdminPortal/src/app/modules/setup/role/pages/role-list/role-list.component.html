@@ -1,0 +1,47 @@
+<div class="page-shell">
+  <div class="page-shell__top">
+    <div>
+      <button type="button" class="btn btn-outline" (click)="goBack()">← Back</button>
+      <h1>Role List</h1>
+      <p>Search roles and toggle their availability for assignments.</p>
+    </div>
+    <input [(ngModel)]="searchQuery" (ngModelChange)="onSearch()" type="text" placeholder="Search by role name or code" />
+  </div>
+
+  <div class="empty at-card" *ngIf="filteredRoles.length === 0; else roleTable">
+    No roles defined yet. Create your first role.
+  </div>
+
+  <ng-template #roleTable>
+    <div class="table-wrap at-card">
+      <table>
+        <thead>
+          <tr>
+            <th>#Sr</th>
+            <th>Role Name</th>
+            <th>Role Code</th>
+            <th>Permissions</th>
+            <th>Status</th>
+            <th>Created At</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let role of filteredRoles; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ role.roleName }}</td>
+            <td>{{ role.roleCode }}</td>
+            <td>{{ role.permissions.join(', ') }}</td>
+            <td><span class="status-badge" [class.active]="role.status === 'Active'" [class.inactive]="role.status === 'Inactive'">{{ role.status }}</span></td>
+            <td>{{ role.createdAt | date: 'mediumDate' }}</td>
+            <td>
+              <button type="button" class="btn btn-secondary btn-small" (click)="toggleStatus(role)">
+                {{ role.status === 'Active' ? 'Set Inactive' : 'Set Active' }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-template>
+</div>

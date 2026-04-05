@@ -1,0 +1,41 @@
+<div class="completion">
+  <div class="completion__icon" aria-hidden="true">
+    <svg class="check" viewBox="0 0 52 52">
+      <circle class="check__circle" cx="26" cy="26" r="24" fill="none" />
+      <path class="check__path" fill="none" d="M14 27l8 8 16-16" />
+    </svg>
+  </div>
+
+  <h1>Setup complete</h1>
+  <p class="completion__sub">Your environment is saved locally in this browser session.</p>
+
+  @if (config) {
+    <dl class="summary">
+      <div class="summary__row">
+        <dt>API base URL</dt>
+        <dd>{{ config.environment.apiBaseUrl }}</dd>
+      </div>
+      <div class="summary__row">
+        <dt>Port</dt>
+        <dd>{{ config.environment.port }}</dd>
+      </div>
+      <div class="summary__row">
+        <dt>Environment</dt>
+        <dd>{{ config.environment.environment }}</dd>
+      </div>
+      <div class="summary__row">
+        <dt>Database</dt>
+        <dd>{{ config.database.host }} / {{ config.database.name }} ({{ config.database.user }})</dd>
+      </div>
+      <div class="summary__row">
+        <dt>Token expiry</dt>
+        <dd>{{ config.auth.tokenExpiry }}</dd>
+      </div>
+    </dl>
+  }
+
+  <div class="completion__actions">
+    <button type="button" class="btn btn-primary" (click)="goDashboard()">Go to Dashboard</button>
+    <button type="button" class="btn btn-secondary" (click)="reconfigure()">Re-configure</button>
+  </div>
+</div>

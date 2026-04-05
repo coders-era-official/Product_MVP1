@@ -1,0 +1,36 @@
+<div class="page-shell">
+  <button type="button" class="btn btn-outline" (click)="goBack()">← Back to Service Category</button>
+  <header class="page-shell__header">
+    <div class="badge">Will be assigned: #{{ nextNumber }}</div>
+    <h1>Add Category</h1>
+    <p>Create a new category for services and customer assignments.</p>
+  </header>
+
+  <div class="toast" *ngIf="successMessage">{{ successMessage }}</div>
+
+  <form class="form-card at-card" [formGroup]="form" (ngSubmit)="submit()">
+    <label class="field">
+      <span>Category Name *</span>
+      <input formControlName="categoryName" type="text" placeholder="Hotel Management" />
+    </label>
+
+    <label class="field">
+      <span>Description *</span>
+      <textarea formControlName="description" rows="4" placeholder="Describe this category"></textarea>
+    </label>
+
+    <div class="field">
+      <span>Status</span>
+      <div class="toggle-group">
+        <button type="button" [class.active]="form.value.status === 'Active'" (click)="form.patchValue({ status: 'Active' })">Active</button>
+        <button type="button" [class.active]="form.value.status === 'Inactive'" (click)="form.patchValue({ status: 'Inactive' })">Inactive</button>
+      </div>
+    </div>
+
+    <span class="error" *ngIf="form.invalid && form.touched">Category name and description are required.</span>
+
+    <div class="actions">
+      <button type="submit" class="btn btn-primary">Save Category</button>
+    </div>
+  </form>
+</div>

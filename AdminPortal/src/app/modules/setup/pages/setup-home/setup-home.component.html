@@ -1,0 +1,17 @@
+<div class="setup-home">
+  <header class="setup-home__head">
+    <h1>System Setup</h1>
+    <p class="setup-home__sub">Configure your AdminPortal environment in minutes</p>
+  </header>
+
+  <div class="setup-home__grid">
+    @for (c of cards; track c.title) {
+      <article class="at-card setup-card">
+        <span class="setup-card__icon" aria-hidden="true">{{ c.icon }}</span>
+        <h2>{{ c.title }}</h2>
+        <p>{{ c.body }}</p>
+        <a [routerLink]="c.link" class="setup-card__cta">Start →</a>
+      </article>
+    }
+  </div>
+</div>

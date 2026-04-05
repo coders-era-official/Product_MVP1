@@ -1,0 +1,9 @@
+<div class="shell">
+  <app-navbar />
+  <main class="shell__main">
+    <div class="shell__outlet" [@routeFade]="routeAnim">
+      <router-outlet />
+    </div>
+  </main>
+  <app-footer />
+</div>

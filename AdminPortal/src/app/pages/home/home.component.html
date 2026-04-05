@@ -1,0 +1,56 @@
+<section class="hero animate-fade-in-up">
+  <div class="hero__inner">
+    <p class="hero__eyebrow">AdminPortal</p>
+    <h1 class="hero__title">Learn faster. Build sharper. Ship with confidence.</h1>
+    <p class="hero__sub">
+      A dark, modern shell for tech education — inspired by clean product layouts, built with Angular and
+      your own brand story.
+    </p>
+    <div class="hero__actions">
+      <a routerLink="/setup" class="btn btn-primary animate-pulse-cta">Start setup</a>
+      <a routerLink="/docs" class="btn btn-outline">View docs</a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section__head">
+    <h2>Why teams pick this template</h2>
+    <p class="section__lead">Original content — only the layout rhythm echoes premium learning sites.</p>
+  </div>
+  <div class="grid grid--3">
+    @for (f of features; track f.title) {
+      <article class="at-card feature-card">
+        <span class="feature-card__icon" aria-hidden="true">{{ f.icon }}</span>
+        <h3>{{ f.title }}</h3>
+        <p>{{ f.body }}</p>
+      </article>
+    }
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="stats">
+    @for (s of stats; track s.label) {
+      <div class="stats__item">
+        <span class="stats__value">{{ s.value }}</span>
+        <span class="stats__label">{{ s.label }}</span>
+      </div>
+    }
+  </div>
+  <blockquote class="quote">
+    <p>
+      “We wanted a calm, technical aesthetic — bold type, restrained color, and zero clutter between the
+      learner and the lesson.”
+    </p>
+    <cite>— Product team, AdminPortal</cite>
+  </blockquote>
+</section>
+
+<section class="section cta">
+  <div class="cta__card at-card">
+    <h2>Ready to configure your stack?</h2>
+    <p>Walk through environment, database, and auth settings in minutes.</p>
+    <a routerLink="/setup" class="btn btn-primary">Open setup</a>
+  </div>
+</section>

@@ -1,0 +1,210 @@
+<div class="initiate-wrapper">
+  <button class="btn btn-outline back-btn" type="button" (click)="goBack()">← Back to Customer Main</button>
+
+  <div class="success-state at-card" *ngIf="isSubmitted; else formState">
+    <div class="success-icon">✓</div>
+    <h2>Customer Onboarded Successfully!</h2>
+    <p>The customer has been added to the system with <strong>Pending</strong> status.</p>
+    <div class="success-actions">
+      <button class="btn btn-primary" type="button" (click)="goToView()">View All Customers</button>
+      <button class="btn btn-outline" type="button" (click)="resetFlow()">Add Another</button>
+    </div>
+  </div>
+
+  <ng-template #formState>
+    <div class="page-header">
+      <h1>Initiate New Customer</h1>
+      <p>Complete all steps to onboard a customer into AdminPortal</p>
+    </div>
+
+    <div class="stepper">
+      <div
+        class="step"
+        *ngFor="let step of steps; let i = index"
+        [class.active]="i === currentStep"
+        [class.completed]="i < currentStep"
+      >
+        <div class="step-circle">
+          <span *ngIf="i >= currentStep">{{ i + 1 }}</span>
+          <span *ngIf="i < currentStep">✓</span>
+        </div>
+        <span class="step-label">{{ step.icon }} {{ step.label }}</span>
+        <div class="step-line" *ngIf="i < steps.length - 1"></div>
+      </div>
+    </div>
+
+    <form [formGroup]="basicInfoForm" class="form-panel at-card" *ngIf="currentStep === 0">
+      <h3 class="step-title">👤 Basic Information</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="firstName">First Name *</label>
+          <input id="firstName" type="text" formControlName="firstName" placeholder="Arjun" />
+          <span class="error" *ngIf="isFieldInvalid(basicInfoForm, 'firstName')">First name is required</span>
+        </div>
+        <div class="form-group">
+          <label for="lastName">Last Name *</label>
+          <input id="lastName" type="text" formControlName="lastName" placeholder="Mehta" />
+          <span class="error" *ngIf="isFieldInvalid(basicInfoForm, 'lastName')">Last name is required</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="email">Email Address *</label>
+          <input id="email" type="email" formControlName="email" placeholder="arjun@company.com" />
+          <span class="error" *ngIf="isFieldInvalid(basicInfoForm, 'email')">Valid email is required</span>
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone Number *</label>
+          <input id="phone" type="tel" formControlName="phone" placeholder="9876543210" />
+          <span class="error" *ngIf="isFieldInvalid(basicInfoForm, 'phone')">
+            Valid 10-digit Indian mobile number required
+          </span>
+        </div>
+      </div>
+    </form>
+
+    <form [formGroup]="companyForm" class="form-panel at-card" *ngIf="currentStep === 1">
+      <h3 class="step-title">🏢 Company Details</h3>
+      <div class="form-row">
+        <div class="form-group full-width">
+          <label for="companyName">Company Name *</label>
+          <input
+            id="companyName"
+            type="text"
+            formControlName="companyName"
+            placeholder="TechCorp India Pvt Ltd"
+          />
+          <span class="error" *ngIf="isFieldInvalid(companyForm, 'companyName')">Company name is required</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="companyType">Company Type *</label>
+          <select id="companyType" formControlName="companyType">
+            <option value="">-- Select Type --</option>
+            <option *ngFor="let type of companyTypes" [value]="type">{{ type }}</option>
+          </select>
+          <span class="error" *ngIf="isFieldInvalid(companyForm, 'companyType')">Company type is required</span>
+        </div>
+        <div class="form-group">
+          <label for="companySize">Company Size *</label>
+          <select id="companySize" formControlName="companySize">
+            <option value="">-- Select Size --</option>
+            <option *ngFor="let size of companySizes" [value]="size">{{ size }} employees</option>
+          </select>
+          <span class="error" *ngIf="isFieldInvalid(companyForm, 'companySize')">Company size is required</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="industry">Industry *</label>
+          <select id="industry" formControlName="industry">
+            <option value="">-- Select Industry --</option>
+            <option *ngFor="let industry of industries" [value]="industry">{{ industry }}</option>
+          </select>
+          <span class="error" *ngIf="isFieldInvalid(companyForm, 'industry')">Industry is required</span>
+        </div>
+        <div class="form-group">
+          <label for="gstNumber">GST Number <span class="optional">(optional)</span></label>
+          <input id="gstNumber" type="text" formControlName="gstNumber" placeholder="27AABCT1332L1ZR" />
+          <span class="error" *ngIf="isFieldInvalid(companyForm, 'gstNumber')">Invalid GST format</span>
+        </div>
+      </div>
+    </form>
+
+    <form [formGroup]="addressForm" class="form-panel at-card" *ngIf="currentStep === 2">
+      <h3 class="step-title">📍 Address Details</h3>
+      <div class="form-row">
+        <div class="form-group full-width">
+          <label for="addressLine1">Address Line 1 *</label>
+          <input id="addressLine1" type="text" formControlName="addressLine1" placeholder="Building, Street, Area" />
+          <span class="error" *ngIf="isFieldInvalid(addressForm, 'addressLine1')">Address is required</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group full-width">
+          <label for="addressLine2">Address Line 2 <span class="optional">(optional)</span></label>
+          <input id="addressLine2" type="text" formControlName="addressLine2" placeholder="Landmark, Floor, etc." />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="city">City *</label>
+          <input id="city" type="text" formControlName="city" placeholder="Mumbai" />
+          <span class="error" *ngIf="isFieldInvalid(addressForm, 'city')">City is required</span>
+        </div>
+        <div class="form-group">
+          <label for="state">State *</label>
+          <select id="state" formControlName="state">
+            <option value="">-- Select State --</option>
+            <option *ngFor="let state of indianStates" [value]="state">{{ state }}</option>
+          </select>
+          <span class="error" *ngIf="isFieldInvalid(addressForm, 'state')">State is required</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="pincode">Pincode *</label>
+          <input id="pincode" type="text" formControlName="pincode" placeholder="400001" maxlength="6" />
+          <span class="error" *ngIf="isFieldInvalid(addressForm, 'pincode')">Valid 6-digit pincode required</span>
+        </div>
+        <div class="form-group">
+          <label for="country">Country</label>
+          <input id="country" type="text" formControlName="country" readonly />
+        </div>
+      </div>
+    </form>
+
+    <form [formGroup]="planForm" class="form-panel at-card" *ngIf="currentStep === 3">
+      <h3 class="step-title">📦 Plan & Billing</h3>
+
+      <div class="billing-toggle">
+        <label>Billing Cycle:</label>
+        <div class="toggle-options">
+          <button
+            type="button"
+            *ngFor="let cycle of billingCycles"
+            [class.active]="planForm.get('billingCycle')?.value === cycle"
+            (click)="planForm.patchValue({ billingCycle: cycle })"
+          >
+            {{ cycle }}
+          </button>
+        </div>
+      </div>
+
+      <div class="plans-grid">
+        <div
+          class="plan-card"
+          *ngFor="let plan of plans"
+          [class.selected]="selectedPlan === plan.name"
+          (click)="selectPlan(plan.name)"
+        >
+          <div class="plan-name">{{ plan.name }}</div>
+          <div class="plan-price">{{ plan.price }}</div>
+          <ul class="plan-features">
+            <li *ngFor="let feature of plan.features">✓ {{ feature }}</li>
+          </ul>
+          <div class="plan-check" *ngIf="selectedPlan === plan.name">✓ Selected</div>
+        </div>
+      </div>
+
+      <span class="error" *ngIf="isFieldInvalid(planForm, 'planName')">Please select a plan</span>
+    </form>
+
+    <div class="form-actions">
+      <button class="btn btn-outline" type="button" (click)="prevStep()" *ngIf="currentStep > 0">← Previous</button>
+      <button class="btn btn-primary" type="button" (click)="nextStep()" *ngIf="currentStep < steps.length - 1">
+        Next →
+      </button>
+      <button
+        class="btn btn-primary btn-submit"
+        type="button"
+        (click)="submitForm()"
+        *ngIf="currentStep === steps.length - 1"
+        [disabled]="isSubmitting"
+      >
+        {{ isSubmitting ? 'Submitting...' : 'Submit & Onboard Customer' }}
+      </button>
+    </div>
+  </ng-template>
+</div>

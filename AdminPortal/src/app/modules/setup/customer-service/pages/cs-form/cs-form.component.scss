@@ -1,0 +1,22 @@
+@use '../../../role/pages/role-form/role-form.component.scss';
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 0.75rem;
+  margin-bottom: 1rem;
+  border-radius: 999px;
+  background: rgba(108, 99, 255, 0.14);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+select {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text-primary);
+  font: inherit;
+}

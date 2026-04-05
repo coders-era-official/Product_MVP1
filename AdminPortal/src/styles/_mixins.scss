@@ -1,0 +1,36 @@
+@mixin respond($min) {
+  @media (min-width: $min) {
+    @content;
+  }
+}
+
+@mixin container {
+  width: 100%;
+  max-width: var(--bp-xl);
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 2rem);
+}
+
+@mixin focus-ring {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@mixin status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+
+  &.active {
+    background: rgba(0, 212, 170, 0.12);
+    color: #00d4aa;
+  }
+
+  &.inactive {
+    background: rgba(144, 144, 176, 0.12);
+    color: var(--text-secondary);
+  }
+}

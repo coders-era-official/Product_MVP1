@@ -1,0 +1,86 @@
+@use 'mixins' as *;
+
+.config {
+  @include container;
+  max-width: 560px;
+  padding-block: 2rem 3rem;
+}
+
+.config__head h1 {
+  margin: 0 0 0.25rem;
+}
+
+.config__sub {
+  margin: 0 0 1rem;
+  color: var(--text-secondary);
+}
+
+.stepper {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.stepper__dot {
+  flex: 1;
+  height: 4px;
+  border-radius: 4px;
+  background: var(--border);
+}
+
+.stepper__dot--active {
+  background: linear-gradient(90deg, var(--accent), #3d37a8);
+}
+
+.fieldset {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin: 0 0 1.5rem;
+}
+
+.fieldset legend {
+  padding: 0 0.35rem;
+  font-weight: 600;
+  font-family: 'Syne', sans-serif;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+
+.field span {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.field input,
+.field select {
+  min-height: var(--touch-min);
+  padding: 0.5rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--secondary-bg);
+  color: var(--text-primary);
+  font: inherit;
+}
+
+.field input:focus-visible,
+.field select:focus-visible {
+  @include focus-ring;
+}
+
+.error {
+  font-size: 0.8rem;
+  color: #ff6b8a;
+}
+
+.config__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: flex-end;
+}

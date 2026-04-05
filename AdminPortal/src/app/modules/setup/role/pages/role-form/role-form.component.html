@@ -1,0 +1,66 @@
+<div class="page-shell">
+  <button type="button" class="btn btn-outline" (click)="goBack()">← Back to Role Master</button>
+
+  <header class="page-shell__header">
+    <h1>Create Role</h1>
+    <p>Define role metadata and the permissions available to assigned users.</p>
+  </header>
+
+  <div class="toast" *ngIf="successMessage">{{ successMessage }}</div>
+
+  <form class="form-card at-card" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="form-grid">
+      <label class="field">
+        <span>Role Name *</span>
+        <input formControlName="roleName" type="text" placeholder="Hotel Admin" />
+      </label>
+
+      <label class="field">
+        <span>Role Code *</span>
+        <input formControlName="roleCode" type="text" placeholder="HOTEL_ADMIN" (blur)="uppercaseCode()" />
+      </label>
+    </div>
+
+    <label class="field">
+      <span>Description</span>
+      <textarea formControlName="description" rows="4" placeholder="Briefly describe this role"></textarea>
+    </label>
+
+    <div class="field">
+      <span>Permissions *</span>
+      <div class="checks">
+        <label class="check" *ngFor="let permission of permissionOptions">
+          <input
+            type="checkbox"
+            [checked]="hasPermission(permission)"
+            (change)="togglePermission(permission, $any($event.target).checked)"
+          />
+          <span>{{ permission }}</span>
+        </label>
+      </div>
+      <span class="error" *ngIf="permissionsInvalid">Select at least one permission.</span>
+    </div>
+
+    <div class="field">
+      <span>Status</span>
+      <div class="toggle-group">
+        <button type="button" [class.active]="form.value.status === 'Active'" (click)="form.patchValue({ status: 'Active' })">
+          Active
+        </button>
+        <button type="button" [class.active]="form.value.status === 'Inactive'" (click)="form.patchValue({ status: 'Inactive' })">
+          Inactive
+        </button>
+      </div>
+    </div>
+
+    <div class="error-group">
+      <span class="error" *ngIf="form.get('roleName')?.invalid && form.get('roleName')?.touched">Role name must be at least 2 characters.</span>
+      <span class="error" *ngIf="form.get('roleCode')?.invalid && form.get('roleCode')?.touched">Use uppercase letters and underscores only.</span>
+    </div>
+
+    <div class="actions">
+      <button type="submit" class="btn btn-primary">Save Role</button>
+      <button type="button" class="btn btn-secondary" (click)="form.reset({ roleName: '', roleCode: '', description: '', status: 'Active' })">Reset</button>
+    </div>
+  </form>
+</div>

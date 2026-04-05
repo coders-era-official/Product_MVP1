@@ -1,0 +1,36 @@
+<header class="navbar" [class.navbar--open]="menuOpen">
+  <div class="navbar__inner">
+    <a routerLink="/" class="navbar__brand" (click)="closeMenu()">
+      <span class="navbar__badge" aria-hidden="true">ATU</span>
+      <span class="navbar__title">AdminPortal</span>
+    </a>
+
+    <button
+      type="button"
+      class="navbar__toggle"
+      [attr.aria-expanded]="menuOpen"
+      aria-controls="primary-nav"
+      aria-label="Toggle navigation"
+      (click)="toggleMenu()"
+    >
+      <span class="navbar__burger"></span>
+    </button>
+
+    <nav id="primary-nav" class="navbar__nav" [class.navbar__nav--visible]="menuOpen">
+      <a
+        routerLink="/"
+        routerLinkActive="is-active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="navbar__link"
+        (click)="closeMenu()"
+        >Home</a
+      >
+      <a routerLink="/setup" routerLinkActive="is-active" class="navbar__link" (click)="closeMenu()"
+        >Setup</a
+      >
+      <a routerLink="/docs" class="navbar__link" (click)="closeMenu()">Docs</a>
+      <a routerLink="/about" class="navbar__link" (click)="closeMenu()">About</a>
+      <a routerLink="/setup" class="btn btn-primary navbar__cta" (click)="closeMenu()">Get Started</a>
+    </nav>
+  </div>
+</header>

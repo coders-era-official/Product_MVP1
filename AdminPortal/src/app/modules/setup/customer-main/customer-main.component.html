@@ -1,0 +1,56 @@
+<div class="customer-main">
+  <div class="page-header">
+    <h1 class="page-title">Customer Management</h1>
+    <p class="page-subtitle">Onboard new customers or view existing ones</p>
+  </div>
+
+  <div class="options-grid">
+    <div
+      class="option-card initiate-card"
+      (click)="navigate('initiate')"
+      (keydown.enter)="navigate('initiate')"
+      (keydown.space)="navigate('initiate')"
+      role="button"
+      tabindex="0"
+    >
+      <div class="card-icon">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+          <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </div>
+      <h2 class="card-title">Initiate</h2>
+      <p class="card-desc">Onboard a new customer into the system with full profile setup</p>
+      <div class="card-arrow">→</div>
+    </div>
+
+    <div
+      class="option-card view-card"
+      (click)="navigate('view')"
+      (keydown.enter)="navigate('view')"
+      (keydown.space)="navigate('view')"
+      role="button"
+      tabindex="0"
+    >
+      <div class="card-icon">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+          <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2" />
+          <path
+            d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
+      </div>
+      <h2 class="card-title">View</h2>
+      <p class="card-desc">Browse and manage all existing onboarded customers</p>
+      <div class="card-arrow">→</div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,53 @@
+<div class="page-shell">
+  <div class="page-shell__top">
+    <div>
+      <button type="button" class="btn btn-outline" (click)="goBack()">← Back</button>
+      <h1>Customer Services</h1>
+      <p>Filter services by category and review the grouped service catalog.</p>
+    </div>
+    <div class="filters">
+      <input [(ngModel)]="searchQuery" (ngModelChange)="onFilterChange()" type="text" placeholder="Search by service name" />
+      <select [(ngModel)]="categoryFilter" (ngModelChange)="onFilterChange()">
+        <option value="All">All Categories</option>
+        <option *ngFor="let category of categories" [value]="category.id">
+          #{{ category.categoryNumber }} {{ category.categoryName }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div class="table-wrap at-card" *ngIf="groups.length > 0; else emptyState">
+    <ng-container *ngFor="let group of groups">
+      <div class="group-head">
+        <span class="number-badge">#{{ group.categoryNumber }}</span>
+        <h2>{{ group.categoryName }}</h2>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Service #</th>
+            <th>Service Name</th>
+            <th>Category Name</th>
+            <th>Category #</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let service of group.items">
+            <td>{{ service.serviceNumber }}</td>
+            <td>{{ service.serviceName }}</td>
+            <td>{{ service.categoryName }}</td>
+            <td>{{ group.categoryNumber }}</td>
+            <td><span class="status-badge" [class.active]="service.status === 'Active'" [class.inactive]="service.status === 'Inactive'">{{ service.status }}</span></td>
+            <td><button type="button" class="btn btn-secondary btn-small" (click)="toggle(service)">{{ service.status === 'Active' ? 'Set Inactive' : 'Set Active' }}</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-container>
+  </div>
+
+  <ng-template #emptyState>
+    <div class="empty at-card">No services found for the current filters.</div>
+  </ng-template>
+</div>

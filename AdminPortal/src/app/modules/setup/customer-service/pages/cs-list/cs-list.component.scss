@@ -1,0 +1,104 @@
+@use 'mixins' as *;
+
+.page-shell {
+  @include container;
+  padding-block: 2rem 3rem;
+}
+
+.page-shell__top {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.page-shell__top h1 {
+  margin: 0.75rem 0 0.35rem;
+  font-family: 'Syne', sans-serif;
+}
+
+.page-shell__top p {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.filters {
+  display: grid;
+  gap: 0.75rem;
+  min-width: min(100%, 360px);
+}
+
+input,
+select {
+  min-height: 46px;
+  padding: 0.8rem 0.95rem;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text-primary);
+}
+
+.table-wrap {
+  overflow: auto;
+}
+
+.group-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0 1rem;
+}
+
+.group-head h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.number-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  background: rgba(108, 99, 255, 0.15);
+  color: var(--accent);
+  border-radius: 8px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+th,
+td {
+  padding: 0.9rem 0.8rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+th {
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+}
+
+.status-badge {
+  @include status-badge;
+}
+
+.btn-small {
+  min-height: 36px;
+  padding: 0.5rem 0.8rem;
+}
+
+.empty {
+  color: var(--text-secondary);
+  text-align: center;
+}

@@ -1,0 +1,105 @@
+<div class="config">
+  <header class="config__head">
+    <h1>Configuration</h1>
+    <p class="config__sub">Step {{ step + 1 }} of {{ totalSteps }}</p>
+    <div class="stepper" aria-hidden="true">
+      @for (s of [0, 1, 2]; track s) {
+        <span class="stepper__dot" [class.stepper__dot--active]="step >= s"></span>
+      }
+    </div>
+  </header>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="config__form">
+    @if (step === 0) {
+      <fieldset class="fieldset">
+        <legend>Environment settings</legend>
+        <label class="field">
+          <span>API base URL</span>
+          <input type="url" formControlName="apiBaseUrl" placeholder="https://api.example.com" autocomplete="url" />
+          @if (fieldError('apiBaseUrl')) {
+            <span class="error">{{ fieldError('apiBaseUrl') }}</span>
+          }
+        </label>
+        <label class="field">
+          <span>Port</span>
+          <input type="number" formControlName="port" min="1" max="65535" />
+          @if (fieldError('port')) {
+            <span class="error">{{ fieldError('port') }}</span>
+          }
+        </label>
+        <label class="field">
+          <span>Environment</span>
+          <select formControlName="environment">
+            @for (opt of envOptions; track opt.value) {
+              <option [value]="opt.value">{{ opt.label }}</option>
+            }
+          </select>
+          @if (fieldError('environment')) {
+            <span class="error">{{ fieldError('environment') }}</span>
+          }
+        </label>
+      </fieldset>
+    }
+
+    @if (step === 1) {
+      <fieldset class="fieldset">
+        <legend>Database</legend>
+        <label class="field">
+          <span>DB host</span>
+          <input type="text" formControlName="dbHost" autocomplete="off" />
+          @if (fieldError('dbHost')) {
+            <span class="error">{{ fieldError('dbHost') }}</span>
+          }
+        </label>
+        <label class="field">
+          <span>DB name</span>
+          <input type="text" formControlName="dbName" autocomplete="off" />
+          @if (fieldError('dbName')) {
+            <span class="error">{{ fieldError('dbName') }}</span>
+          }
+        </label>
+        <label class="field">
+          <span>DB user</span>
+          <input type="text" formControlName="dbUser" autocomplete="username" />
+          @if (fieldError('dbUser')) {
+            <span class="error">{{ fieldError('dbUser') }}</span>
+          }
+        </label>
+        <label class="field">
+          <span>DB password</span>
+          <input type="password" formControlName="dbPassword" autocomplete="new-password" />
+        </label>
+      </fieldset>
+    }
+
+    @if (step === 2) {
+      <fieldset class="fieldset">
+        <legend>Auth settings</legend>
+        <label class="field">
+          <span>JWT secret (hint only — never paste production secrets)</span>
+          <input type="text" formControlName="jwtSecretHint" placeholder="e.g. rotate via vault" />
+        </label>
+        <label class="field">
+          <span>Token expiry</span>
+          <select formControlName="tokenExpiry">
+            @for (t of tokenExpiryOptions; track t) {
+              <option [value]="t">{{ t }}</option>
+            }
+          </select>
+          @if (fieldError('tokenExpiry')) {
+            <span class="error">{{ fieldError('tokenExpiry') }}</span>
+          }
+        </label>
+      </fieldset>
+    }
+
+    <div class="config__actions">
+      <button type="button" class="btn btn-secondary" (click)="prev()" [disabled]="step === 0">Previous</button>
+      @if (step < totalSteps - 1) {
+        <button type="button" class="btn btn-primary" (click)="next()">Next</button>
+      } @else {
+        <button type="submit" class="btn btn-primary">Submit</button>
+      }
+    </div>
+  </form>
+</div>
