@@ -1,10 +1,18 @@
 export interface CustomerService {
-  id: string;
+  id: number;
   serviceNumber: number;
   serviceName: string;
-  categoryId: string;
+  categoryId: number;
   categoryName: string;
   description: string;
   status: 'Active' | 'Inactive';
-  createdAt: Date;
+  createdAt: string;
+}
+
+export interface CustomerServicePayload {
+  serviceNumber: number;
+  serviceName: string;
+  categoryId: number;
+  description: string;
+  status: CustomerService['status'];
 }

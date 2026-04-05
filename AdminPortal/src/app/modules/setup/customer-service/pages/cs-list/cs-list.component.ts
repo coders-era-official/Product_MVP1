@@ -1,32 +1,33 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTableModule } from '@angular/material/table';
 import { CustomerServiceService } from '../../../../../core/services/customer-service.service';
 import { ServiceCategoryService } from '../../../../../core/services/service-category.service';
 import type { CustomerService } from '../../models/customer-service.model';
 import type { ServiceCategory } from '../../../service-category/models/service-category.model';
 
-interface ServiceGroup {
-  categoryName: string;
-  categoryNumber: number;
-  items: CustomerService[];
-}
-
 @Component({
   selector: 'app-cs-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink, MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatTableModule],
   templateUrl: './cs-list.component.html',
   styleUrl: './cs-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CsListComponent implements OnInit {
+  readonly displayedColumns = ['serviceNumber', 'serviceName', 'categoryName', 'description', 'status'];
   services: CustomerService[] = [];
-  groups: ServiceGroup[] = [];
+  filteredServices: CustomerService[] = [];
   categories: ServiceCategory[] = [];
   searchQuery = '';
-  categoryFilter = 'All';
+  categoryFilter: number | 'All' = 'All';
 
   constructor(
     private readonly customerServiceService: CustomerServiceService,
@@ -50,37 +51,40 @@ export class CsListComponent implements OnInit {
     void this.router.navigate(['/setup/customer-service']);
   }
 
-  onFilterChange(): void {
+  onFilterChange(query?: string, categoryId?: number | 'All'): void {
+    if (typeof query === 'string') {
+      this.searchQuery = query;
+    }
+    if (categoryId !== undefined) {
+      this.categoryFilter = categoryId;
+    }
     this.applyFilters();
   }
 
-  toggle(service: CustomerService): void {
-    this.customerServiceService.updateStatus(service.id, service.status === 'Active' ? 'Inactive' : 'Active');
+  toggleStatus(service: CustomerService): void {
+    this.customerServiceService
+      .updateService(service.id, {
+        serviceNumber: service.serviceNumber,
+        serviceName: service.serviceName,
+        categoryId: service.categoryId,
+        description: service.description,
+        status: service.status === 'Active' ? 'Inactive' : 'Active',
+      })
+      .subscribe((updatedService) => {
+        this.services = this.services.map((item) => (item.id === updatedService.id ? updatedService : item));
+        this.applyFilters();
+      });
   }
 
   private applyFilters(): void {
     const query = this.searchQuery.trim().toLowerCase();
-    const filtered = this.services.filter((service) => {
-      const matchesSearch = query === '' || service.serviceName.toLowerCase().includes(query);
+    this.filteredServices = this.services.filter((service) => {
+      const matchesSearch =
+        query === '' ||
+        `${service.serviceName} ${service.categoryName} ${service.description}`.toLowerCase().includes(query);
       const matchesCategory = this.categoryFilter === 'All' || service.categoryId === this.categoryFilter;
       return matchesSearch && matchesCategory;
     });
-
-    const categoryMap = new Map<string, number>(this.categories.map((item) => [item.id, item.categoryNumber]));
-    const grouped = new Map<string, ServiceGroup>();
-    for (const item of filtered.sort((a, b) => a.categoryName.localeCompare(b.categoryName) || a.serviceNumber - b.serviceNumber)) {
-      const existing = grouped.get(item.categoryId);
-      if (existing) {
-        existing.items.push(item);
-      } else {
-        grouped.set(item.categoryId, {
-          categoryName: item.categoryName,
-          categoryNumber: categoryMap.get(item.categoryId) ?? 0,
-          items: [item],
-        });
-      }
-    }
-    this.groups = Array.from(grouped.values());
     this.cdr.markForCheck();
   }
 }

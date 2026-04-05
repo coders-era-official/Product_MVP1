@@ -11,6 +11,10 @@ import { Router } from '@angular/router';
 export class RoleComponent {
   constructor(private readonly router: Router) {}
 
+  goBack(): void {
+    void this.router.navigate(['/setup']);
+  }
+
   navigate(target: 'form' | 'list'): void {
     void this.router.navigate(['/setup/role', target]);
   }

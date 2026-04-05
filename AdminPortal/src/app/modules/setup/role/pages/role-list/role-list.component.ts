@@ -1,19 +1,25 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatTableModule } from '@angular/material/table';
 import { RoleService } from '../../../../../core/services/role.service';
 import type { Role } from '../../models/role.model';
 
 @Component({
   selector: 'app-role-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, DatePipe],
+  imports: [CommonModule, FormsModule, DatePipe, RouterLink, MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule, MatTableModule],
   templateUrl: './role-list.component.html',
   styleUrl: './role-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RoleListComponent implements OnInit {
+  readonly displayedColumns = ['roleCode', 'roleName', 'permissions', 'status', 'createdAt'];
   roles: Role[] = [];
   filteredRoles: Role[] = [];
   searchQuery = '';
@@ -31,12 +37,24 @@ export class RoleListComponent implements OnInit {
     });
   }
 
-  onSearch(): void {
+  onSearch(query: string): void {
+    this.searchQuery = query;
     this.applyFilter();
   }
 
   toggleStatus(role: Role): void {
-    this.roleService.updateRoleStatus(role.id, role.status === 'Active' ? 'Inactive' : 'Active');
+    const payload = {
+      roleName: role.roleName,
+      roleCode: role.roleCode,
+      description: role.description,
+      permissions: role.permissions,
+      status: role.status === 'Active' ? 'Inactive' : 'Active',
+    } as const;
+
+    this.roleService.updateRole(role.id, payload).subscribe((updatedRole) => {
+      this.roles = this.roles.map((item) => (item.id === updatedRole.id ? updatedRole : item));
+      this.applyFilter();
+    });
   }
 
   goBack(): void {
@@ -46,7 +64,7 @@ export class RoleListComponent implements OnInit {
   private applyFilter(): void {
     const query = this.searchQuery.trim().toLowerCase();
     this.filteredRoles = this.roles.filter((role) => {
-      const haystack = `${role.roleName} ${role.roleCode}`.toLowerCase();
+      const haystack = `${role.roleName} ${role.roleCode} ${role.permissions.join(' ')}`.toLowerCase();
       return query === '' || haystack.includes(query);
     });
     this.cdr.markForCheck();

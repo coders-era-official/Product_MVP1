@@ -1,18 +1,25 @@
 export interface AssignedService {
-  serviceId: string;
+  serviceId: number;
   serviceNumber: number;
   serviceName: string;
   categoryName: string;
 }
 
 export interface CustomerRoleAssignment {
-  id: string;
-  customerId: string;
+  id: number;
+  customerId: number;
   customerName: string;
   companyName: string;
-  roleId: string;
+  roleId: number;
   roleName: string;
   assignedServices: AssignedService[];
-  assignedAt: Date;
+  assignedAt: string;
   status: 'Active' | 'Inactive';
+}
+
+export interface CustomerRolePayload {
+  customerId: number;
+  roleId: number;
+  serviceIds: number[];
+  status: CustomerRoleAssignment['status'];
 }

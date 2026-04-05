@@ -1,36 +1,42 @@
-<div class="page-shell">
-  <button type="button" class="btn btn-outline" (click)="goBack()">← Back to Service Category</button>
-  <header class="page-shell__header">
-    <div class="badge">Will be assigned: #{{ nextNumber }}</div>
-    <h1>Add Category</h1>
-    <p>Create a new category for services and customer assignments.</p>
-  </header>
-
-  <div class="toast" *ngIf="successMessage">{{ successMessage }}</div>
-
-  <form class="form-card at-card" [formGroup]="form" (ngSubmit)="submit()">
-    <label class="field">
-      <span>Category Name *</span>
-      <input formControlName="categoryName" type="text" placeholder="Hotel Management" />
-    </label>
-
-    <label class="field">
-      <span>Description *</span>
-      <textarea formControlName="description" rows="4" placeholder="Describe this category"></textarea>
-    </label>
-
-    <div class="field">
-      <span>Status</span>
-      <div class="toggle-group">
-        <button type="button" [class.active]="form.value.status === 'Active'" (click)="form.patchValue({ status: 'Active' })">Active</button>
-        <button type="button" [class.active]="form.value.status === 'Inactive'" (click)="form.patchValue({ status: 'Inactive' })">Inactive</button>
+<div class="at-page animate-fade-up">
+  <button class="at-back-btn" (click)="goBack()">← Back</button>
+  <div class="at-page-header">
+    <h1 class="at-page-title font-display">Create Category</h1>
+  </div>
+  <div class="at-card-flat max-w-xl">
+    <form [formGroup]="categoryForm">
+      <div class="space-y-4">
+        <div class="at-field">
+          <label class="at-label">Category Number *</label>
+          <input class="at-input" type="number" formControlName="categoryNumber" readonly>
+          <span class="at-hint">Next available category number is auto-generated.</span>
+        </div>
+        <div class="at-field">
+          <label class="at-label">Category Name *</label>
+          <input class="at-input" formControlName="categoryName" placeholder="e.g. Hotel">
+          <span class="at-error" *ngIf="isFieldInvalid(categoryForm, 'categoryName')">Category name is required</span>
+        </div>
+        <div class="at-field">
+          <label class="at-label">Description *</label>
+          <textarea class="at-textarea" rows="4" formControlName="description" placeholder="Describe what this category groups together"></textarea>
+          <span class="at-error" *ngIf="isFieldInvalid(categoryForm, 'description')">Description is required</span>
+        </div>
+        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+          <div>
+            <p class="text-sm font-medium text-gray-700">Status</p>
+            <p class="text-xs text-gray-400">New categories are active by default</p>
+          </div>
+          <div class="at-toggle-track" [class.on]="categoryForm.get('status')?.value === 'Active'" (click)="toggleStatus()">
+            <div class="at-toggle-thumb"></div>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <span class="error" *ngIf="form.invalid && form.touched">Category name and description are required.</span>
-
-    <div class="actions">
-      <button type="submit" class="btn btn-primary">Save Category</button>
-    </div>
-  </form>
+      <div class="flex gap-3 justify-end mt-6">
+        <button type="button" class="at-btn-ghost" (click)="goBack()">Cancel</button>
+        <button type="button" class="at-btn-primary" (click)="submitForm()">Create Category</button>
+      </div>
+      <p class="text-sm text-emerald-600 mt-4" *ngIf="successMessage">{{ successMessage }}</p>
+    </form>
+  </div>
 </div>

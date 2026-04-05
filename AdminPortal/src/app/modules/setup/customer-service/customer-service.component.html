@@ -1,20 +1,25 @@
-<div class="master-page">
-  <header class="master-page__header">
-    <h1>Customer Service Master</h1>
-    <p>Define the services available to customers and connect them to service categories.</p>
-  </header>
-  <div class="master-page__grid">
-    <article class="master-card" role="button" tabindex="0" (click)="navigate('form')" (keydown.enter)="navigate('form')">
-      <span class="master-card__icon">⚙️</span>
-      <h2>Add Service</h2>
-      <p>Create a service, map it to a category, and let the system assign the next service number.</p>
-      <span class="master-card__cta">Open Form →</span>
-    </article>
-    <article class="master-card" role="button" tabindex="0" (click)="navigate('list')" (keydown.enter)="navigate('list')">
-      <span class="master-card__icon">🧾</span>
-      <h2>View Services</h2>
-      <p>Filter by category, search by name, and review grouped service tables.</p>
-      <span class="master-card__cta">View List →</span>
-    </article>
+<div class="at-page animate-fade-up">
+  <button class="at-back-btn" (click)="goBack()">← Back to Setup</button>
+
+  <div class="at-page-header">
+    <h1 class="at-page-title font-display">Customer Service</h1>
+    <p class="at-page-subtitle">Define services and link them to categories</p>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl">
+    <div class="at-option-card" (click)="navigate('form')">
+      <div class="card-stripe bg-amber-500"></div>
+      <div class="card-icon-wrap bg-amber-50">➕</div>
+      <p class="card-title">Initiate</p>
+      <p class="card-desc">Create a customer-facing service with category mapping, description, and status</p>
+      <span class="card-arrow">→</span>
+    </div>
+    <div class="at-option-card" (click)="navigate('list')">
+      <div class="card-stripe bg-orange-500"></div>
+      <div class="card-icon-wrap bg-orange-50">👀</div>
+      <p class="card-title">View</p>
+      <p class="card-desc">Search services, filter by category, and manage status from one table view</p>
+      <span class="card-arrow">→</span>
+    </div>
   </div>
 </div>

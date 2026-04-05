@@ -1,78 +1,77 @@
-<div class="view-wrapper">
-  <div class="view-header">
+<div class="at-page animate-fade-up">
+  <div class="flex items-center justify-between mb-6">
     <div>
-      <button class="btn btn-outline back-btn" type="button" (click)="goBack()">← Back</button>
-      <h1>All Customers</h1>
-      <p>{{ filteredCustomers.length }} customer(s) found</p>
+      <button class="at-back-btn" (click)="goBack()">← Back</button>
+      <h1 class="at-page-title font-display">All Customers</h1>
+      <p class="at-page-subtitle">{{ filteredCustomers.length }} customer(s) found</p>
     </div>
-    <button class="btn btn-primary" type="button" (click)="goToInitiate()">+ Initiate New</button>
+    <button class="at-btn-primary" (click)="goToInitiate()">+ Initiate New</button>
   </div>
 
-  <div class="filters-bar at-card">
-    <input
-      #searchInput
-      type="text"
-      class="search-input"
-      placeholder="Search by name, company, email..."
-      (input)="onSearch(searchInput.value)"
-    />
-    <div class="status-filters">
+  <div class="flex flex-col sm:flex-row gap-3 mb-6">
+    <div class="at-search flex-1">
+      <span class="at-search-icon">🔍</span>
+      <input type="text" placeholder="Search by name, company, email..." (input)="onSearch($any($event.target).value)">
+    </div>
+    <div class="flex gap-2 flex-wrap">
       <button
-        *ngFor="let status of statuses"
-        type="button"
-        [class.active]="filterStatus === status"
-        (click)="onFilterStatus(status)"
-        class="filter-chip"
-      >
-        {{ status }}
+        *ngFor="let s of statuses"
+        class="text-xs font-medium px-3 py-2 rounded-lg border transition-all duration-150"
+        [class.bg-primary-600]="filterStatus === s"
+        [class.text-white]="filterStatus === s"
+        [class.border-primary-600]="filterStatus === s"
+        [class.bg-white]="filterStatus !== s"
+        [class.text-gray-500]="filterStatus !== s"
+        [class.border-gray-200]="filterStatus !== s"
+        (click)="onFilterStatus(s)">
+        {{ s }}
       </button>
     </div>
   </div>
 
-  <div class="empty-state at-card" *ngIf="filteredCustomers.length === 0; else customerGrid">
-    <div class="empty-icon">👥</div>
-    <h3>No customers found</h3>
-    <p>Try adjusting your search or <button type="button" class="text-link" (click)="goToInitiate()">initiate a new customer</button></p>
+  <div class="at-empty-state" *ngIf="filteredCustomers.length === 0">
+    <div class="text-4xl mb-3">👥</div>
+    <h3 class="text-base font-medium text-gray-900 mb-1">No customers found</h3>
+    <p class="text-sm text-gray-400">
+      Try adjusting your search or
+      <a class="text-primary-600 cursor-pointer" (click)="goToInitiate()">initiate a new customer</a>
+    </p>
   </div>
 
-  <ng-template #customerGrid>
-    <div class="customers-grid">
-      <div class="customer-card at-card" *ngFor="let customer of filteredCustomers">
-        <div class="card-top">
-          <div class="avatar">{{ getInitials(customer) }}</div>
-          <div class="customer-meta">
-            <h3 class="customer-name">{{ customer.firstName }} {{ customer.lastName }}</h3>
-            <p class="customer-company">{{ customer.companyName }}</p>
-          </div>
-          <span class="status-badge" [ngClass]="getStatusClass(customer.status)">
-            {{ customer.status }}
-          </span>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" *ngIf="filteredCustomers.length > 0">
+    <div class="at-card animate-scale-in" *ngFor="let c of filteredCustomers">
+      <div class="flex items-start gap-3 mb-4">
+        <div class="at-avatar">{{ getInitials(c) }}</div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-semibold text-gray-900 truncate">{{ c.firstName }} {{ c.lastName }}</p>
+          <p class="text-xs text-gray-400 truncate">{{ c.companyName }}</p>
         </div>
+        <span class="at-badge" [class.at-badge-active]="c.status === 'Active'" [class.at-badge-pending]="c.status === 'Pending'" [class.at-badge-inactive]="c.status === 'Inactive'">
+          {{ c.status }}
+        </span>
+      </div>
 
-        <div class="card-details">
-          <div class="detail-row">
-            <span class="detail-icon">✉️</span>
-            <span>{{ customer.email }}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-icon">📞</span>
-            <span>{{ customer.phone }}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-icon">📍</span>
-            <span>{{ customer.city }}, {{ customer.state }}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-icon">📦</span>
-            <span>{{ customer.planName }} · {{ customer.billingCycle }}</span>
-          </div>
+      <div class="space-y-1.5 mb-4">
+        <div class="flex items-center gap-2 text-xs text-gray-500">
+          <span>✉️</span><span class="truncate">{{ c.email }}</span>
         </div>
-
-        <div class="card-footer">
-          <span class="onboarded-date"> Onboarded: {{ customer.onboardedAt | date: 'mediumDate' }} </span>
-          <span class="customer-id">{{ customer.id }}</span>
+        <div class="flex items-center gap-2 text-xs text-gray-500">
+          <span>📞</span><span>{{ c.phone }}</span>
+        </div>
+        <div class="flex items-center gap-2 text-xs text-gray-500">
+          <span>📍</span><span>{{ c.city }}, {{ c.state }}</span>
+        </div>
+        <div class="flex items-center gap-2 text-xs text-gray-500">
+          <span>📦</span>
+          <span class="at-badge at-badge-purple">{{ c.planName }}</span>
+          <span>{{ c.billingCycle }}</span>
         </div>
       </div>
+
+      <div class="pt-3 border-t border-gray-50 flex justify-between items-center">
+        <span class="text-xs text-gray-300">{{ c.onboardedAt | date:'mediumDate' }}</span>
+        <span class="text-xs font-mono text-gray-400">{{ c.id }}</span>
+      </div>
     </div>
-  </ng-template>
+  </div>
 </div>

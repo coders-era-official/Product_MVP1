@@ -2,3 +2,5 @@
 config/
 *.class
 target/
+/.metadata/
+config/

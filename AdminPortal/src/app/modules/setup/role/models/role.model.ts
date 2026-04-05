@@ -1,9 +1,17 @@
 export interface Role {
-  id: string;
+  id: number;
   roleName: string;
   roleCode: string;
   description: string;
   permissions: string[];
   status: 'Active' | 'Inactive';
-  createdAt: Date;
+  createdAt: string;
+}
+
+export interface RolePayload {
+  roleName: string;
+  roleCode: string;
+  description: string;
+  permissions: string[];
+  status: Role['status'];
 }

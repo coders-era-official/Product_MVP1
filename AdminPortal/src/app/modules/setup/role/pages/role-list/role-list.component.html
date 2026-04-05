@@ -1,47 +1,61 @@
-<div class="page-shell">
-  <div class="page-shell__top">
+<div class="at-page animate-fade-up">
+  <div class="flex items-center justify-between mb-6">
     <div>
-      <button type="button" class="btn btn-outline" (click)="goBack()">← Back</button>
-      <h1>Role List</h1>
-      <p>Search roles and toggle their availability for assignments.</p>
+      <button class="at-back-btn" (click)="goBack()">← Back</button>
+      <h1 class="at-page-title font-display">All Roles</h1>
     </div>
-    <input [(ngModel)]="searchQuery" (ngModelChange)="onSearch()" type="text" placeholder="Search by role name or code" />
+    <button class="at-btn-primary" routerLink="/setup/role/form">+ Create Role</button>
   </div>
 
-  <div class="empty at-card" *ngIf="filteredRoles.length === 0; else roleTable">
-    No roles defined yet. Create your first role.
+  <div class="at-search max-w-sm mb-4">
+    <span class="at-search-icon">🔍</span>
+    <input type="text" placeholder="Search roles..." (input)="onSearch($any($event.target).value)">
   </div>
 
-  <ng-template #roleTable>
-    <div class="table-wrap at-card">
-      <table>
-        <thead>
-          <tr>
-            <th>#Sr</th>
-            <th>Role Name</th>
-            <th>Role Code</th>
-            <th>Permissions</th>
-            <th>Status</th>
-            <th>Created At</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let role of filteredRoles; let i = index">
-            <td>{{ i + 1 }}</td>
-            <td>{{ role.roleName }}</td>
-            <td>{{ role.roleCode }}</td>
-            <td>{{ role.permissions.join(', ') }}</td>
-            <td><span class="status-badge" [class.active]="role.status === 'Active'" [class.inactive]="role.status === 'Inactive'">{{ role.status }}</span></td>
-            <td>{{ role.createdAt | date: 'mediumDate' }}</td>
-            <td>
-              <button type="button" class="btn btn-secondary btn-small" (click)="toggleStatus(role)">
-                {{ role.status === 'Active' ? 'Set Inactive' : 'Set Active' }}
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </ng-template>
+  <div class="at-card-flat p-0 overflow-hidden">
+    <table class="at-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Role Name</th>
+          <th>Code</th>
+          <th>Permissions</th>
+          <th>Status</th>
+          <th>Created</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let role of filteredRoles; let i = index">
+          <td class="text-gray-400">{{ i + 1 }}</td>
+          <td class="font-medium text-gray-900">{{ role.roleName }}</td>
+          <td><span class="font-mono text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">{{ role.roleCode }}</span></td>
+          <td>
+            <div class="flex flex-wrap gap-1">
+              <span *ngFor="let p of role.permissions" class="at-badge at-badge-purple text-xs">{{ p }}</span>
+            </div>
+          </td>
+          <td>
+            <span class="at-badge" [class.at-badge-active]="role.status === 'Active'" [class.at-badge-inactive]="role.status === 'Inactive'">
+              {{ role.status }}
+            </span>
+          </td>
+          <td class="text-gray-400">{{ role.createdAt | date:'mediumDate' }}</td>
+          <td>
+            <button
+              class="text-xs px-3 py-1.5 rounded-lg border transition-all duration-150"
+              [class.bg-red-50]="role.status === 'Active'"
+              [class.text-red-600]="role.status === 'Active'"
+              [class.border-red-100]="role.status === 'Active'"
+              [class.bg-green-50]="role.status === 'Inactive'"
+              [class.text-green-600]="role.status === 'Inactive'"
+              [class.border-green-100]="role.status === 'Inactive'"
+              (click)="toggleStatus(role)">
+              {{ role.status === 'Active' ? 'Deactivate' : 'Activate' }}
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

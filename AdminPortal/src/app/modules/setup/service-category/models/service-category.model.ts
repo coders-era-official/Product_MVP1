@@ -1,8 +1,15 @@
 export interface ServiceCategory {
-  id: string;
+  id: number;
   categoryNumber: number;
   categoryName: string;
   description: string;
   status: 'Active' | 'Inactive';
-  createdAt: Date;
+  createdAt: string;
+}
+
+export interface ServiceCategoryPayload {
+  categoryNumber: number;
+  categoryName: string;
+  description: string;
+  status: ServiceCategory['status'];
 }

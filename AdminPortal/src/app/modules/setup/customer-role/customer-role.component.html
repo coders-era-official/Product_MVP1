@@ -1,102 +1,135 @@
-<div class="assignment-page">
-  <div class="assignment-page__top">
-    <div>
-      <button type="button" class="btn btn-outline" (click)="goBack()">← Back to Setup</button>
-      <h1>Customer Role Assignment</h1>
-      <p>Select a customer, assign one active role, and attach one or more services.</p>
-    </div>
+<div class="at-page animate-fade-up">
+  <button class="at-back-btn" (click)="goBack()">← Back</button>
+  <div class="at-page-header">
+    <h1 class="at-page-title font-display">Customer Role Assignment</h1>
+    <p class="at-page-subtitle">Select customer → assign role → assign services</p>
   </div>
 
-  <div class="success-state at-card" *ngIf="isSubmitted && savedAssignment">
-    <h2>Assignment saved</h2>
-    <p>{{ savedAssignment.customerName }} now has the <strong>{{ savedAssignment.roleName }}</strong> role with {{ savedAssignment.assignedServices.length }} service(s).</p>
-    <div class="actions">
-      <button type="button" class="btn btn-primary" (click)="resetForm()">Create Another Assignment</button>
+  <div class="at-success-state" *ngIf="isSubmitted">
+    <div class="at-success-icon">✅</div>
+    <h2 class="at-success-title">Assignment Saved!</h2>
+    <p class="at-success-sub">{{ successMessage }}</p>
+    <div class="flex gap-3 justify-center">
+      <button class="at-btn-primary" (click)="isSubmitted = false; resetForm()">Add Another Assignment</button>
     </div>
   </div>
 
   <ng-container *ngIf="!isSubmitted">
-    <section class="panel at-card">
-      <h2>Section A · Select Customer</h2>
-      <input type="text" [ngModel]="searchQuery" (ngModelChange)="searchCustomers($event)" placeholder="Search customer by name, company, or ID" />
-      <div class="customer-results" *ngIf="searchQuery">
-        <button type="button" class="customer-result" *ngFor="let customer of filteredCustomers" (click)="selectCustomer(customer)">
-          <strong>{{ customer.firstName }} {{ customer.lastName }}</strong>
-          <span>{{ customer.companyName }} · {{ customer.id }}</span>
-        </button>
-      </div>
-
-      <div class="selected-card" *ngIf="selectedCustomer">
-        <h3>{{ selectedCustomer.firstName }} {{ selectedCustomer.lastName }}</h3>
-        <p>{{ selectedCustomer.companyName }} · {{ selectedCustomer.email }}</p>
-        <span class="plan-chip">{{ selectedCustomer.planName }} plan</span>
-      </div>
-    </section>
-
-    <section class="panel at-card">
-      <h2>Section B · Assign Role</h2>
-      <div class="role-grid">
-        <button
-          type="button"
-          class="role-card"
-          *ngFor="let role of roles"
-          [class.selected]="selectedRole?.id === role.id"
-          (click)="selectRole(role)"
-        >
-          <div class="role-head">
-            <h3>{{ role.roleName }}</h3>
-            <span class="code-badge">{{ role.roleCode }}</span>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-1 space-y-4">
+        <div class="at-card-flat">
+          <p class="at-section-title">👤 Select Customer</p>
+          <div class="at-search mb-3">
+            <span class="at-search-icon">🔍</span>
+            <input type="text" placeholder="Search customers..." (input)="searchCustomers($any($event.target).value)">
           </div>
-          <p>{{ role.description }}</p>
-          <div class="role-perms">
-            <span *ngFor="let permission of role.permissions">{{ permission }}</span>
+          <div class="space-y-2 max-h-48 overflow-y-auto" *ngIf="filteredCustomers.length > 0 && !selectedCustomer">
+            <div
+              *ngFor="let c of filteredCustomers"
+              class="flex items-center gap-3 p-2.5 rounded-xl cursor-pointer hover:bg-primary-50 transition-colors duration-100"
+              (click)="selectCustomer(c)">
+              <div class="at-avatar">{{ getInitials(c) }}</div>
+              <div>
+                <p class="text-sm font-medium text-gray-900">{{ c.firstName }} {{ c.lastName }}</p>
+                <p class="text-xs text-gray-400">{{ c.companyName }}</p>
+              </div>
+            </div>
           </div>
-        </button>
-      </div>
-    </section>
-
-    <section class="panel at-card">
-      <h2>Section C · Assign Services</h2>
-      <div class="services-layout">
-        <div>
-          <h3>Available Services</h3>
-          <div class="service-row" *ngFor="let service of availableServices">
-            <span class="svc-number">#{{ service.serviceNumber }}</span>
-            <div class="svc-name">{{ service.serviceName }}</div>
-            <div class="svc-cat">{{ service.categoryName }}</div>
-            <button type="button" class="btn btn-secondary btn-small" (click)="assignService(service)">Add →</button>
+          <div *ngIf="selectedCustomer" class="flex items-center gap-3 p-3 bg-primary-50 rounded-xl border border-primary-100">
+            <div class="at-avatar">{{ getInitials(selectedCustomer) }}</div>
+            <div class="flex-1">
+              <p class="text-sm font-semibold text-gray-900">{{ selectedCustomer.firstName }} {{ selectedCustomer.lastName }}</p>
+              <p class="text-xs text-gray-400">{{ selectedCustomer.companyName }}</p>
+            </div>
+            <button class="text-gray-300 hover:text-gray-500 text-sm" (click)="resetForm()">✕</button>
           </div>
         </div>
 
-        <div>
-          <h3>Assigned Services</h3>
-          <div class="service-row assigned" *ngFor="let service of assignedServices; let i = index; trackBy: trackByServiceId">
-            <span class="svc-number">{{ i + 1 }}</span>
-            <div class="svc-name">{{ service.serviceName }}</div>
-            <div class="svc-cat">{{ service.categoryName }}</div>
-            <button type="button" class="btn btn-outline btn-small" (click)="removeService(service.serviceId)">× Remove</button>
+        <div class="at-card-flat">
+          <p class="at-section-title">🔐 Assign Role</p>
+          <div class="space-y-2">
+            <label
+              *ngFor="let role of roles"
+              class="flex items-start gap-3 p-3 border rounded-xl cursor-pointer transition-all duration-150"
+              [class.border-primary-300]="selectedRole?.id === role.id"
+              [class.bg-primary-50]="selectedRole?.id === role.id"
+              [class.border-gray-100]="selectedRole?.id !== role.id"
+              (click)="selectRole(role)">
+              <input type="radio" [checked]="selectedRole?.id === role.id" class="mt-0.5 accent-primary-600">
+              <div>
+                <p class="text-sm font-medium text-gray-900">{{ role.roleName }}</p>
+                <span class="font-mono text-xs text-gray-400">{{ role.roleCode }}</span>
+                <div class="flex flex-wrap gap-1 mt-1">
+                  <span *ngFor="let p of role.permissions" class="at-badge at-badge-purple" style="font-size:10px">{{ p }}</span>
+                </div>
+              </div>
+            </label>
           </div>
-          <div class="empty-note" *ngIf="assignedServices.length === 0">No services assigned yet.</div>
         </div>
       </div>
-    </section>
 
-    <section class="panel at-card">
-      <h2>Section D · Summary & Submit</h2>
-      <div class="summary">
-        <p><strong>Selected Customer:</strong> {{ customerLabel }}</p>
-        <p><strong>Assigned Role:</strong> {{ selectedRole ? (selectedRole.roleName + ' (' + selectedRole.roleCode + ')') : 'None selected' }}</p>
-        <p><strong>Services Count:</strong> {{ assignedServices.length }}</p>
-        <div class="service-summary">
-          <div *ngFor="let service of assignedServices">#{{ service.serviceNumber }} {{ service.serviceName }} ({{ service.categoryName }})</div>
+      <div class="lg:col-span-2">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="at-card-flat">
+            <p class="at-section-title">Available Services</p>
+            <div class="space-y-2 max-h-96 overflow-y-auto pr-1">
+              <div *ngFor="let svc of availableServicesForAssignment" class="at-service-row" (click)="assignService(svc)">
+                <span class="at-badge-number">#{{ svc.serviceNumber }}</span>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-900 truncate">{{ svc.serviceName }}</p>
+                  <span class="at-badge at-badge-blue text-xs">{{ svc.categoryName }}</span>
+                </div>
+                <span class="text-primary-400 text-sm">+</span>
+              </div>
+              <div class="at-empty-state py-8" *ngIf="availableServicesForAssignment.length === 0">
+                <p class="text-sm text-gray-300">All services assigned</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="at-card-flat">
+            <p class="at-section-title">Assigned Services <span class="at-badge at-badge-purple ml-1">{{ assignedServices.length }}</span></p>
+            <div class="space-y-2 max-h-96 overflow-y-auto pr-1">
+              <div *ngFor="let svc of assignedServices" class="at-service-row border-emerald-100 bg-emerald-50/30">
+                <span class="at-badge-number">#{{ svc.serviceNumber }}</span>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-900 truncate">{{ svc.serviceName }}</p>
+                  <span class="at-badge at-badge-active text-xs">{{ svc.categoryName }}</span>
+                </div>
+                <button class="text-red-300 hover:text-red-500 text-xs transition-colors" (click)="removeService(svc.serviceId)">✕</button>
+              </div>
+              <div class="at-empty-state py-8" *ngIf="assignedServices.length === 0">
+                <p class="text-sm text-gray-300">No services assigned yet</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="at-card mt-4 bg-gray-50 border-gray-100">
+          <p class="at-section-title">Summary</p>
+          <div class="grid grid-cols-3 gap-4 mb-4 text-center">
+            <div>
+              <p class="text-xs text-gray-400 mb-1">Customer</p>
+              <p class="text-sm font-medium text-gray-900 truncate">{{ selectedCustomer?.firstName || '—' }}</p>
+            </div>
+            <div>
+              <p class="text-xs text-gray-400 mb-1">Role</p>
+              <p class="text-sm font-medium text-gray-900 truncate">{{ selectedRole?.roleName || '—' }}</p>
+            </div>
+            <div>
+              <p class="text-xs text-gray-400 mb-1">Services</p>
+              <p class="text-sm font-medium text-gray-900">{{ assignedServices.length }}</p>
+            </div>
+          </div>
+          <div class="flex gap-3 justify-end">
+            <button class="at-btn-ghost" (click)="resetForm()">Reset</button>
+            <button class="at-btn-primary" (click)="submitAssignment()" [disabled]="!selectedCustomer || !selectedRole || isSubmitting">
+              {{ isSubmitting ? 'Saving...' : '💾 Save Assignment' }}
+            </button>
+          </div>
+          <p class="at-error mt-4" *ngIf="successMessage && !isSubmitted">{{ successMessage }}</p>
         </div>
       </div>
-      <div class="actions">
-        <button type="button" class="btn btn-primary" [disabled]="!isReadyToSubmit || isSubmitting" (click)="submitAssignment()">
-          {{ isSubmitting ? 'Saving...' : 'Save Assignment' }}
-        </button>
-        <button type="button" class="btn btn-secondary" (click)="resetForm()">Reset</button>
-      </div>
-    </section>
+    </div>
   </ng-container>
 </div>

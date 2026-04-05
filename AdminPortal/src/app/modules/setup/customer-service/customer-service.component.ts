@@ -11,6 +11,10 @@ import { Router } from '@angular/router';
 export class CustomerServiceComponent {
   constructor(private readonly router: Router) {}
 
+  goBack(): void {
+    void this.router.navigate(['/setup']);
+  }
+
   navigate(target: 'form' | 'list'): void {
     void this.router.navigate(['/setup/customer-service', target]);
   }

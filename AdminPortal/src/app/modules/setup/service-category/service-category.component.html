@@ -1,20 +1,25 @@
-<div class="master-page">
-  <header class="master-page__header">
-    <h1>Service Category Master</h1>
-    <p>Manage the high-level categories that services belong to across customer deployments.</p>
-  </header>
-  <div class="master-page__grid">
-    <article class="master-card" role="button" tabindex="0" (click)="navigate('form')" (keydown.enter)="navigate('form')">
-      <span class="master-card__icon">🗂️</span>
-      <h2>Add Category</h2>
-      <p>Create a new category and let the system assign the next category number automatically.</p>
-      <span class="master-card__cta">Open Form →</span>
-    </article>
-    <article class="master-card" role="button" tabindex="0" (click)="navigate('list')" (keydown.enter)="navigate('list')">
-      <span class="master-card__icon">📚</span>
-      <h2>View Categories</h2>
-      <p>Review category cards, numbers, status, and creation dates in one grid.</p>
-      <span class="master-card__cta">View List →</span>
-    </article>
+<div class="at-page animate-fade-up">
+  <button class="at-back-btn" (click)="goBack()">← Back to Setup</button>
+
+  <div class="at-page-header">
+    <h1 class="at-page-title font-display">Service Category</h1>
+    <p class="at-page-subtitle">Create and review customer service categories</p>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl">
+    <div class="at-option-card" (click)="navigate('form')">
+      <div class="card-stripe bg-emerald-500"></div>
+      <div class="card-icon-wrap bg-emerald-50">➕</div>
+      <p class="card-title">Initiate</p>
+      <p class="card-desc">Add a new category with number, description, and activation status</p>
+      <span class="card-arrow">→</span>
+    </div>
+    <div class="at-option-card" (click)="navigate('list')">
+      <div class="card-stripe bg-lime-500"></div>
+      <div class="card-icon-wrap bg-lime-50">👀</div>
+      <p class="card-title">View</p>
+      <p class="card-desc">See all configured categories in a responsive card grid with quick actions</p>
+      <span class="card-arrow">→</span>
+    </div>
   </div>
 </div>

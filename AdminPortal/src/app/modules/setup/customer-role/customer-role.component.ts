@@ -2,6 +2,14 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { forkJoin } from 'rxjs';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatSelectModule } from '@angular/material/select';
 import { CustomerRoleService } from '../../../core/services/customer-role.service';
 import { CustomerService } from '../../../core/services/customer.service';
 import { CustomerServiceService } from '../../../core/services/customer-service.service';
@@ -14,7 +22,17 @@ import type { Role } from '../role/models/role.model';
 @Component({
   selector: 'app-customer-role',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatButtonModule,
+    MatCardModule,
+    MatChipsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatListModule,
+    MatSelectModule,
+  ],
   templateUrl: './customer-role.component.html',
   styleUrl: './customer-role.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,11 +44,12 @@ export class CustomerRoleComponent implements OnInit {
   assignedServices: AssignedService[] = [];
   customers: Customer[] = [];
   roles: Role[] = [];
+  assignments: CustomerRoleAssignment[] = [];
   isSubmitting = false;
   isSubmitted = false;
+  successMessage = '';
   searchQuery = '';
   filteredCustomers: Customer[] = [];
-  savedAssignment: CustomerRoleAssignment | null = null;
 
   constructor(
     private readonly customerService: CustomerService,
@@ -42,24 +61,24 @@ export class CustomerRoleComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.customerService.getCustomers().subscribe((customers) => {
+    forkJoin({
+      customers: this.customerService.getCustomers(),
+      roles: this.roleService.getRoles(),
+      services: this.customerServiceService.getServices(),
+      assignments: this.customerRoleService.getAssignments(),
+    }).subscribe(({ customers, roles, services, assignments }) => {
       this.customers = customers;
       this.filteredCustomers = customers;
-      this.cdr.markForCheck();
-    });
-    this.roleService.getRoles().subscribe((roles) => {
       this.roles = roles.filter((role) => role.status === 'Active');
-      this.cdr.markForCheck();
-    });
-    this.customerServiceService.getServices().subscribe((services) => {
       this.availableServices = services.filter((service) => service.status === 'Active');
+      this.assignments = assignments;
       this.cdr.markForCheck();
     });
   }
 
   searchCustomers(query: string): void {
     this.searchQuery = query;
-    const normalized = query.trim().toLowerCase();
+    const normalized = this.searchQuery.trim().toLowerCase();
     this.filteredCustomers = this.customers.filter((customer) => {
       const haystack = `${customer.firstName} ${customer.lastName} ${customer.companyName} ${customer.id}`.toLowerCase();
       return normalized === '' || haystack.includes(normalized);
@@ -68,17 +87,9 @@ export class CustomerRoleComponent implements OnInit {
 
   selectCustomer(customer: Customer): void {
     this.selectedCustomer = customer;
-    this.customerRoleService.getAssignments().subscribe((assignments) => {
-      const existing = assignments.find((item) => item.customerId === customer.id);
-      if (existing) {
-        this.selectedRole = this.roles.find((role) => role.id === existing.roleId) ?? null;
-        this.assignedServices = [...existing.assignedServices];
-      } else {
-        this.selectedRole = null;
-        this.assignedServices = [];
-      }
-      this.cdr.markForCheck();
-    });
+    const existing = this.assignments.find((assignment) => assignment.customerId === customer.id);
+    this.selectedRole = this.roles.find((role) => role.id === existing?.roleId) ?? null;
+    this.assignedServices = existing ? [...existing.assignedServices] : [];
   }
 
   selectRole(role: Role): void {
@@ -100,60 +111,55 @@ export class CustomerRoleComponent implements OnInit {
     ];
   }
 
-  removeService(serviceId: string): void {
+  removeService(serviceId: number): void {
     this.assignedServices = this.assignedServices.filter((item) => item.serviceId !== serviceId);
   }
 
-  submitAssignment(): void {
-    if (!this.selectedCustomer || !this.selectedRole || this.assignedServices.length === 0) {
-      return;
-    }
-    this.isSubmitting = true;
-    this.customerRoleService
-      .saveAssignment({
-        customerId: this.selectedCustomer.id,
-        customerName: `${this.selectedCustomer.firstName} ${this.selectedCustomer.lastName}`,
-        companyName: this.selectedCustomer.companyName,
-        roleId: this.selectedRole.id,
-        roleName: this.selectedRole.roleName,
-        assignedServices: this.assignedServices,
-        status: 'Active',
-      })
-      .subscribe((assignment) => {
-        this.savedAssignment = assignment;
-        this.isSubmitting = false;
-        this.isSubmitted = true;
-        this.cdr.markForCheck();
-      });
+  getInitials(customer: Customer): string {
+    return `${customer.firstName[0] ?? ''}${customer.lastName[0] ?? ''}`.toUpperCase();
   }
 
   resetForm(): void {
     this.selectedCustomer = null;
     this.selectedRole = null;
     this.assignedServices = [];
-    this.savedAssignment = null;
-    this.isSubmitted = false;
-    this.isSubmitting = false;
     this.searchQuery = '';
     this.filteredCustomers = this.customers;
   }
 
+  get availableServicesForAssignment(): ServiceItem[] {
+    return this.availableServices.filter((service) => !this.assignedServices.some((item) => item.serviceId === service.id));
+  }
+
+  submitAssignment(): void {
+    if (!this.selectedCustomer || !this.selectedRole || this.assignedServices.length === 0) {
+      return;
+    }
+
+    this.isSubmitting = true;
+    this.customerRoleService
+      .saveAssignment({
+        customerId: this.selectedCustomer.id,
+        roleId: this.selectedRole.id,
+        serviceIds: this.assignedServices.map((item) => item.serviceId),
+        status: 'Active',
+      })
+      .subscribe({
+        next: () => {
+          this.isSubmitting = false;
+          this.isSubmitted = true;
+          this.successMessage = 'Customer role mapping saved successfully.';
+          this.cdr.markForCheck();
+        },
+        error: () => {
+          this.isSubmitting = false;
+          this.successMessage = 'Unable to save customer role mapping right now.';
+          this.cdr.markForCheck();
+        },
+      });
+  }
+
   goBack(): void {
     void this.router.navigate(['/setup']);
-  }
-
-  get customerLabel(): string {
-    if (!this.selectedCustomer) {
-      return 'None selected';
-    }
-    return `${this.selectedCustomer.firstName} ${this.selectedCustomer.lastName} (${this.selectedCustomer.companyName})`;
-  }
-
-  get isReadyToSubmit(): boolean {
-    return this.selectedCustomer !== null && this.selectedRole !== null && this.assignedServices.length > 0;
-  }
-
-  trackByServiceId(_index: number, item: AssignedService): string {
-    return item.serviceId;
   }
 }

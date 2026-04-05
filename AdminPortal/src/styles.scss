@@ -1,140 +1,145 @@
-@use 'styles/variables';
-@use 'styles/typography';
-@use 'styles/animations';
-@use 'styles/mixins' as m;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Syne:wght@500;600;700;800&display=swap');
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap');
 
 body {
-  margin: 0;
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-  background:
-    linear-gradient(180deg, #f7fbff 0%, #ffffff 18%, #ffffff 100%);
-  color: var(--text-primary);
+  background-color: #f9fafb;
   font-family: 'DM Sans', sans-serif;
+  color: #111827;
 }
 
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
+@layer components {
+  .at-page { @apply px-6 py-8 max-w-6xl mx-auto; }
+  .at-page-header { @apply mb-8; }
+  .at-page-title { @apply text-2xl font-display font-semibold text-gray-900 mb-1; }
+  .at-page-subtitle { @apply text-sm text-gray-500; }
 
-a {
-  color: var(--accent);
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
+  .at-card {
+    @apply bg-white rounded-2xl border border-gray-100 p-6 shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5;
+  }
+  .at-card-flat { @apply bg-white rounded-2xl border border-gray-100 p-6; }
 
-a:hover {
-  color: var(--accent-hover);
-}
+  .at-option-card {
+    @apply bg-white rounded-2xl border-2 border-gray-100 p-8 cursor-pointer transition-all duration-200 hover:border-primary-400 hover:shadow-lg hover:-translate-y-1 relative overflow-hidden;
+  }
+  .at-option-card .card-stripe { @apply absolute top-0 left-0 right-0 h-1 rounded-t-2xl; }
+  .at-option-card .card-icon-wrap { @apply w-14 h-14 rounded-xl flex items-center justify-center text-2xl mb-4; }
+  .at-option-card .card-title { @apply text-xl font-display font-semibold text-gray-900 mb-2; }
+  .at-option-card .card-desc { @apply text-sm text-gray-500 leading-relaxed; }
+  .at-option-card .card-arrow { @apply absolute bottom-6 right-6 text-gray-300 text-xl transition-all duration-200; }
+  .at-option-card:hover .card-arrow { @apply text-primary-600 translate-x-1; }
 
-button {
-  font-family: inherit;
-}
+  .at-stat-card { @apply bg-white rounded-xl border border-gray-100 p-4 shadow-sm; }
+  .at-stat-label { @apply text-xs font-medium text-gray-400 mb-1; }
+  .at-stat-value { @apply text-2xl font-display font-semibold text-gray-900; }
 
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
+  .at-field { @apply flex flex-col gap-1.5; }
+  .at-label { @apply text-xs font-medium text-gray-700 uppercase tracking-wide; }
+  .at-input {
+    @apply h-10 w-full border border-gray-200 rounded-xl px-3 text-sm text-gray-900 bg-white outline-none transition-all duration-150 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 placeholder:text-gray-300;
+  }
+  .at-select {
+    @apply h-10 w-full border border-gray-200 rounded-xl px-3 text-sm text-gray-900 bg-white outline-none transition-all duration-150 focus:border-primary-500 focus:ring-2 focus:ring-primary-100;
+  }
+  .at-textarea {
+    @apply w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-900 bg-white outline-none transition-all duration-150 resize-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100 placeholder:text-gray-300;
+  }
+  .at-error { @apply text-xs text-red-500 mt-0.5; }
+  .at-hint  { @apply text-xs text-gray-400 mt-0.5; }
 
-::-webkit-scrollbar-track {
-  background: var(--secondary-bg);
-}
+  .at-btn-primary {
+    @apply bg-primary-600 hover:bg-primary-700 active:scale-95 text-white font-medium text-sm px-5 py-2.5 rounded-xl transition-all duration-150 cursor-pointer border-0;
+  }
+  .at-btn-outline {
+    @apply bg-white hover:bg-primary-50 active:scale-95 text-primary-600 font-medium text-sm px-5 py-2.5 rounded-xl border border-primary-200 transition-all duration-150 cursor-pointer;
+  }
+  .at-btn-ghost {
+    @apply bg-transparent hover:bg-gray-100 active:scale-95 text-gray-600 font-medium text-sm px-4 py-2 rounded-xl transition-all duration-150 cursor-pointer border-0;
+  }
+  .at-btn-danger {
+    @apply bg-red-50 hover:bg-red-100 active:scale-95 text-red-600 font-medium text-sm px-4 py-2 rounded-xl transition-all duration-150 cursor-pointer border border-red-100;
+  }
 
-::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 4px;
-}
+  .at-badge { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium; }
+  .at-badge-active { @apply bg-emerald-50 text-emerald-700; }
+  .at-badge-inactive { @apply bg-gray-100 text-gray-500; }
+  .at-badge-pending { @apply bg-amber-50 text-amber-700; }
+  .at-badge-purple { @apply bg-primary-100 text-primary-700; }
+  .at-badge-blue { @apply bg-blue-50 text-blue-700; }
+  .at-badge-number {
+    @apply inline-flex items-center justify-center min-w-8 h-8 px-2 bg-primary-100 text-primary-700 rounded-lg font-display font-bold text-sm;
+  }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--accent);
-}
+  .at-stepper { @apply flex items-center gap-0 mb-8 overflow-x-auto pb-2; }
+  .at-step { @apply flex items-center gap-2; }
+  .at-step-circle {
+    @apply w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0 transition-all duration-200;
+  }
+  .at-step-circle-done { @apply bg-primary-600 text-white; }
+  .at-step-circle-active { @apply bg-primary-100 text-primary-700 ring-2 ring-primary-400; }
+  .at-step-circle-pending { @apply bg-gray-100 text-gray-400; }
+  .at-step-label { @apply text-xs font-medium whitespace-nowrap; }
+  .at-step-label-done { @apply text-primary-600; }
+  .at-step-label-active { @apply text-gray-900; }
+  .at-step-label-pending { @apply text-gray-400; }
+  .at-step-line { @apply flex-1 h-px bg-gray-200 mx-2 min-w-4; }
+  .at-step-line-done { @apply bg-primary-400; }
 
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: var(--touch-min);
-  padding: 0.65rem 1.35rem;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 0.9375rem;
-  border: 2px solid transparent;
-  cursor: pointer;
-  transition:
-    background 0.2s ease,
-    color 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.15s ease;
-}
+  .at-table { @apply w-full text-sm; }
+  .at-table thead tr { @apply bg-gray-50 border-b border-gray-100; }
+  .at-table thead th { @apply px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide; }
+  .at-table tbody tr { @apply border-b border-gray-50 hover:bg-primary-50/30 transition-colors duration-100; }
+  .at-table tbody td { @apply px-4 py-3 text-sm text-gray-700 align-top; }
 
-.btn:focus-visible {
-  @include m.focus-ring;
-}
+  .at-toggle-track {
+    @apply relative inline-flex w-10 h-6 rounded-full bg-gray-200 cursor-pointer transition-colors duration-200;
+  }
+  .at-toggle-track.on { @apply bg-primary-500; }
+  .at-toggle-thumb {
+    @apply absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow-sm transition-transform duration-200;
+  }
+  .at-toggle-track.on .at-toggle-thumb { @apply translate-x-4; }
 
-.btn-primary {
-  background: var(--accent);
-  color: #ffffff;
-  box-shadow: 0 10px 24px rgba(0, 120, 212, 0.18);
-}
+  .at-search { @apply relative flex items-center; }
+  .at-search input {
+    @apply h-10 w-full border border-gray-200 rounded-xl px-3 pl-9 text-sm text-gray-900 bg-white outline-none transition-all duration-150 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 placeholder:text-gray-300;
+  }
+  .at-search-icon { @apply absolute left-3 text-gray-400 text-sm; }
 
-.btn-primary:hover {
-  background: var(--accent-hover);
-  transform: translateY(-1px);
-}
+  .at-plan-card {
+    @apply border-2 border-gray-100 rounded-2xl p-5 cursor-pointer transition-all duration-200 hover:border-primary-300;
+  }
+  .at-plan-card.selected { @apply border-primary-500 bg-primary-50 ring-2 ring-primary-200; }
+  .at-plan-name { @apply font-display font-semibold text-gray-900 text-base mb-1; }
+  .at-plan-price { @apply text-2xl font-display font-bold text-primary-600 mb-3; }
+  .at-plan-feature { @apply flex items-center gap-2 text-xs text-gray-500 mb-1.5; }
 
-.btn-secondary {
-  background: #ffffff;
-  color: var(--text-primary);
-  border-color: var(--border);
-}
+  .at-service-row {
+    @apply flex items-center gap-3 p-3 bg-white border border-gray-100 rounded-xl cursor-pointer transition-all duration-150 hover:border-primary-300 hover:bg-primary-50/30;
+  }
 
-.btn-secondary:hover {
-  border-color: var(--accent);
-  background: #f8fbff;
-}
+  .at-avatar {
+    @apply w-9 h-9 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-xs font-semibold flex-shrink-0;
+  }
 
-.btn-outline {
-  background: transparent;
-  color: var(--accent);
-  border-color: var(--accent);
-}
+  .at-back-btn {
+    @apply inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-primary-600 transition-colors duration-150 mb-6 cursor-pointer;
+  }
 
-.btn-outline:hover {
-  background: rgba(0, 120, 212, 0.08);
-}
+  .at-section-title {
+    @apply text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2;
+  }
+  .at-section-title::after {
+    content: '';
+    @apply flex-1 h-px bg-gray-100;
+  }
 
-.at-card {
-  background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: clamp(1.25rem, 3vw, 1.75rem);
-  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.06);
-  transition:
-    transform 0.25s ease,
-    border-color 0.25s ease,
-    box-shadow 0.25s ease;
-}
+  .at-success-state { @apply text-center py-16 animate-fade-up; }
+  .at-success-icon { @apply text-5xl mb-4; }
+  .at-success-title { @apply text-xl font-display font-semibold text-gray-900 mb-2; }
+  .at-success-sub { @apply text-sm text-gray-500 mb-8; }
 
-.at-card:hover {
-  transform: translateY(-4px) scale(1.01);
-  border-color: rgba(0, 120, 212, 0.35);
-  box-shadow: 0 22px 44px rgba(0, 120, 212, 0.1);
-}
-
-.page-enter {
-  animation: fadeInUp 0.35s ease;
+  .at-empty-state { @apply text-center py-16; }
 }

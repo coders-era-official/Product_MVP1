@@ -1,26 +1,27 @@
-<div class="page-shell">
-  <div class="page-shell__top">
+<div class="at-page animate-fade-up">
+  <div class="flex items-center justify-between mb-6">
     <div>
-      <button type="button" class="btn btn-outline" (click)="goBack()">← Back</button>
-      <h1>Service Categories</h1>
-      <p>{{ categories.length }} categories available</p>
+      <button class="at-back-btn" (click)="goBack()">← Back</button>
+      <h1 class="at-page-title font-display">Service Categories</h1>
     </div>
+    <button class="at-btn-primary" routerLink="/setup/service-category/form">+ Add Category</button>
   </div>
 
-  <div class="cards-grid">
-    <article class="category-card at-card" *ngFor="let category of categories">
-      <div class="card-top">
-        <span class="number-badge">#{{ category.categoryNumber }}</span>
-        <span class="status-badge" [class.active]="category.status === 'Active'" [class.inactive]="category.status === 'Inactive'">
-          {{ category.status }}
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div class="at-card relative animate-scale-in" *ngFor="let cat of categories">
+      <div class="at-badge-number absolute top-4 right-4">#{{ cat.categoryNumber }}</div>
+
+      <h3 class="text-base font-display font-semibold text-gray-900 pr-10 mb-2">{{ cat.categoryName }}</h3>
+      <p class="text-sm text-gray-400 line-clamp-2 mb-4">{{ cat.description }}</p>
+
+      <div class="flex items-center justify-between pt-3 border-t border-gray-50">
+        <span class="at-badge" [class.at-badge-active]="cat.status === 'Active'" [class.at-badge-inactive]="cat.status !== 'Active'">
+          {{ cat.status }}
         </span>
+        <button class="text-xs at-btn-ghost py-1" (click)="toggleStatus(cat)">
+          {{ cat.status === 'Active' ? 'Deactivate' : 'Activate' }}
+        </button>
       </div>
-      <h2>{{ category.categoryName }}</h2>
-      <p>{{ category.description }}</p>
-      <div class="meta">{{ category.createdAt | date: 'mediumDate' }}</div>
-      <button type="button" class="btn btn-secondary" (click)="toggle(category)">
-        {{ category.status === 'Active' ? 'Set Inactive' : 'Set Active' }}
-      </button>
-    </article>
+    </div>
   </div>
 </div>

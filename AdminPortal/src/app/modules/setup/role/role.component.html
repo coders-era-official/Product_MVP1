@@ -1,22 +1,25 @@
-<div class="master-page">
-  <header class="master-page__header">
-    <h1>Role Master</h1>
-    <p>Create permission-driven roles or review the ones already defined.</p>
-  </header>
+<div class="at-page animate-fade-up">
+  <button class="at-back-btn" (click)="goBack()">← Back to Setup</button>
 
-  <div class="master-page__grid">
-    <article class="master-card" role="button" tabindex="0" (click)="navigate('form')" (keydown.enter)="navigate('form')">
-      <span class="master-card__icon">🔐</span>
-      <h2>Create Role</h2>
-      <p>Define role names, codes, permissions, and activation status.</p>
-      <span class="master-card__cta">Open Form →</span>
-    </article>
+  <div class="at-page-header">
+    <h1 class="at-page-title font-display">Role</h1>
+    <p class="at-page-subtitle">Create or manage access roles for your customers</p>
+  </div>
 
-    <article class="master-card" role="button" tabindex="0" (click)="navigate('list')" (keydown.enter)="navigate('list')">
-      <span class="master-card__icon">📋</span>
-      <h2>View Roles</h2>
-      <p>Search, review, and toggle the roles available for customer assignments.</p>
-      <span class="master-card__cta">View List →</span>
-    </article>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl">
+    <div class="at-option-card" (click)="navigate('form')">
+      <div class="card-stripe bg-sky-500"></div>
+      <div class="card-icon-wrap bg-sky-50">🔐</div>
+      <p class="card-title">Initiate</p>
+      <p class="card-desc">Define a new role with code, description, permissions, and activation status</p>
+      <span class="card-arrow">→</span>
+    </div>
+    <div class="at-option-card" (click)="navigate('list')">
+      <div class="card-stripe bg-cyan-500"></div>
+      <div class="card-icon-wrap bg-cyan-50">👀</div>
+      <p class="card-title">View</p>
+      <p class="card-desc">Browse all roles, search by code, and quickly activate or deactivate entries</p>
+      <span class="card-arrow">→</span>
+    </div>
   </div>
 </div>

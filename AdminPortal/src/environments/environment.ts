@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiBaseUrl: 'http://localhost:3000/api',
+  apiBaseUrl: 'http://localhost:8081/api/v1',
   appName: 'AdminPortal',
   version: '1.0.0',
 };

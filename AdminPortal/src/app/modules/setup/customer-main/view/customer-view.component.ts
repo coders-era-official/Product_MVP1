@@ -1,23 +1,42 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { CommonModule, DatePipe, NgClass } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTableModule } from '@angular/material/table';
 import { CustomerService } from '../../../../core/services/customer.service';
 import type { Customer } from '../models/customer.model';
 
 @Component({
   selector: 'app-customer-view',
   standalone: true,
-  imports: [CommonModule, NgClass, DatePipe],
+  imports: [
+    CommonModule,
+    FormsModule,
+    DatePipe,
+    MatButtonModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatTableModule,
+  ],
   templateUrl: './customer-view.component.html',
   styleUrl: './customer-view.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CustomerViewComponent implements OnInit {
+  readonly displayedColumns = ['id', 'customer', 'company', 'contact', 'plan', 'status', 'onboardedAt'];
+  readonly statuses: Array<'All' | Customer['status']> = ['All', 'Active', 'Pending', 'Inactive'];
+
   customers: Customer[] = [];
   filteredCustomers: Customer[] = [];
   searchQuery = '';
   filterStatus: 'All' | Customer['status'] = 'All';
-  readonly statuses: Array<'All' | Customer['status']> = ['All', 'Active', 'Pending', 'Inactive'];
 
   constructor(
     private readonly customerService: CustomerService,
@@ -26,11 +45,7 @@ export class CustomerViewComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.customerService.getCustomers().subscribe((data) => {
-      this.customers = data;
-      this.filteredCustomers = data;
-      this.cdr.markForCheck();
-    });
+    this.loadCustomers();
   }
 
   onSearch(query: string): void {
@@ -43,6 +58,10 @@ export class CustomerViewComponent implements OnInit {
     this.applyFilters();
   }
 
+  getInitials(customer: Customer): string {
+    return `${customer.firstName[0] ?? ''}${customer.lastName[0] ?? ''}`.toUpperCase();
+  }
+
   goBack(): void {
     void this.router.navigate(['/setup/customer-main']);
   }
@@ -51,12 +70,11 @@ export class CustomerViewComponent implements OnInit {
     void this.router.navigate(['/setup/customer-main/initiate']);
   }
 
-  getInitials(customer: Customer): string {
-    return `${customer.firstName.charAt(0)}${customer.lastName.charAt(0)}`.toUpperCase();
-  }
-
-  getStatusClass(status: Customer['status']): string {
-    return status.toLowerCase();
+  private loadCustomers(): void {
+    this.customerService.getCustomers().subscribe((data) => {
+      this.customers = data;
+      this.applyFilters();
+    });
   }
 
   private applyFilters(): void {

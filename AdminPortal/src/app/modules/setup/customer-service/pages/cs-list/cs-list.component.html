@@ -1,53 +1,61 @@
-<div class="page-shell">
-  <div class="page-shell__top">
+<div class="at-page animate-fade-up">
+  <div class="flex items-center justify-between mb-6">
     <div>
-      <button type="button" class="btn btn-outline" (click)="goBack()">← Back</button>
-      <h1>Customer Services</h1>
-      <p>Filter services by category and review the grouped service catalog.</p>
+      <button class="at-back-btn" (click)="goBack()">← Back</button>
+      <h1 class="at-page-title font-display">Customer Services</h1>
     </div>
-    <div class="filters">
-      <input [(ngModel)]="searchQuery" (ngModelChange)="onFilterChange()" type="text" placeholder="Search by service name" />
-      <select [(ngModel)]="categoryFilter" (ngModelChange)="onFilterChange()">
-        <option value="All">All Categories</option>
-        <option *ngFor="let category of categories" [value]="category.id">
-          #{{ category.categoryNumber }} {{ category.categoryName }}
-        </option>
-      </select>
-    </div>
+    <button class="at-btn-primary" routerLink="/setup/customer-service/form">+ Add Service</button>
   </div>
 
-  <div class="table-wrap at-card" *ngIf="groups.length > 0; else emptyState">
-    <ng-container *ngFor="let group of groups">
-      <div class="group-head">
-        <span class="number-badge">#{{ group.categoryNumber }}</span>
-        <h2>{{ group.categoryName }}</h2>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Service #</th>
-            <th>Service Name</th>
-            <th>Category Name</th>
-            <th>Category #</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let service of group.items">
-            <td>{{ service.serviceNumber }}</td>
-            <td>{{ service.serviceName }}</td>
-            <td>{{ service.categoryName }}</td>
-            <td>{{ group.categoryNumber }}</td>
-            <td><span class="status-badge" [class.active]="service.status === 'Active'" [class.inactive]="service.status === 'Inactive'">{{ service.status }}</span></td>
-            <td><button type="button" class="btn btn-secondary btn-small" (click)="toggle(service)">{{ service.status === 'Active' ? 'Set Inactive' : 'Set Active' }}</button></td>
-          </tr>
-        </tbody>
-      </table>
-    </ng-container>
+  <div class="flex flex-col sm:flex-row gap-3 mb-4">
+    <div class="at-search flex-1 max-w-sm">
+      <span class="at-search-icon">🔍</span>
+      <input type="text" placeholder="Search services..." (input)="onFilterChange($any($event.target).value)">
+    </div>
+    <select class="at-select max-w-xs" [ngModel]="categoryFilter" (ngModelChange)="onFilterChange(undefined, $event)">
+      <option value="All">All Categories</option>
+      <option *ngFor="let category of categories" [ngValue]="category.id">{{ category.categoryName }}</option>
+    </select>
   </div>
 
-  <ng-template #emptyState>
-    <div class="empty at-card">No services found for the current filters.</div>
-  </ng-template>
+  <div class="at-card-flat p-0 overflow-hidden">
+    <table class="at-table">
+      <thead>
+        <tr>
+          <th>Service #</th>
+          <th>Service Name</th>
+          <th>Category</th>
+          <th>Description</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let service of filteredServices">
+          <td><span class="at-badge-number">#{{ service.serviceNumber }}</span></td>
+          <td class="font-medium text-gray-900">{{ service.serviceName }}</td>
+          <td><span class="at-badge at-badge-blue">{{ service.categoryName }}</span></td>
+          <td class="text-gray-500">{{ service.description || '—' }}</td>
+          <td>
+            <span class="at-badge" [class.at-badge-active]="service.status === 'Active'" [class.at-badge-inactive]="service.status !== 'Active'">
+              {{ service.status }}
+            </span>
+          </td>
+          <td>
+            <button
+              class="text-xs px-3 py-1.5 rounded-lg border transition-all duration-150"
+              [class.bg-red-50]="service.status === 'Active'"
+              [class.text-red-600]="service.status === 'Active'"
+              [class.border-red-100]="service.status === 'Active'"
+              [class.bg-green-50]="service.status === 'Inactive'"
+              [class.text-green-600]="service.status === 'Inactive'"
+              [class.border-green-100]="service.status === 'Inactive'"
+              (click)="toggleStatus(service)">
+              {{ service.status === 'Active' ? 'Deactivate' : 'Activate' }}
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
