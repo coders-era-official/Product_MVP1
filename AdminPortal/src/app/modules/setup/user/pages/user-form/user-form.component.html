@@ -1,0 +1,100 @@
+<div class="at-page animate-fade-up">
+  <button class="at-back-btn" (click)="goBack()">← Back</button>
+
+  <div class="at-success-state" *ngIf="isSubmitted">
+    <div class="at-success-icon">✅</div>
+    <h2 class="at-success-title">User Created Successfully!</h2>
+
+    <div class="mx-auto max-w-xs bg-primary-50 border-2 border-primary-200 rounded-2xl p-6 mb-6 text-center">
+      <p class="text-xs font-semibold text-primary-400 uppercase tracking-widest mb-2">User Code</p>
+      <p class="text-3xl font-display font-bold text-primary-700 tracking-wider">
+        {{ submittedUser?.userCode }}
+      </p>
+      <p class="text-xs text-gray-400 mt-2">Save this code for future reference</p>
+    </div>
+
+    <div class="mx-auto max-w-sm bg-white border border-gray-100 rounded-xl p-4 mb-6 text-left space-y-2">
+      <div class="flex justify-between text-sm">
+        <span class="text-gray-400">Name</span>
+        <span class="font-medium">{{ submittedUser?.firstName }} {{ submittedUser?.lastName }}</span>
+      </div>
+      <div class="flex justify-between text-sm">
+        <span class="text-gray-400">Email</span>
+        <span class="font-medium">{{ submittedUser?.email }}</span>
+      </div>
+      <div class="flex justify-between text-sm">
+        <span class="text-gray-400">Phone</span>
+        <span class="font-medium">{{ submittedUser?.phone }}</span>
+      </div>
+      <div class="flex justify-between text-sm">
+        <span class="text-gray-400">Status</span>
+        <span class="at-badge at-badge-active">Active</span>
+      </div>
+    </div>
+
+    <div class="flex gap-3 justify-center">
+      <button class="at-btn-primary" (click)="goToList()">View All Users</button>
+      <button class="at-btn-outline" (click)="resetForm()">Add Another</button>
+    </div>
+  </div>
+
+  <ng-container *ngIf="!isSubmitted">
+    <div class="at-page-header">
+      <h1 class="at-page-title font-display">Create User</h1>
+      <p class="at-page-subtitle">Add a new system user with secure credentials</p>
+    </div>
+
+    <div class="at-card-flat max-w-3xl">
+      <form [formGroup]="userForm">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="at-field">
+            <label class="at-label">First Name *</label>
+            <input class="at-input" formControlName="firstName" placeholder="Rahul">
+            <span class="at-error" *ngIf="isFieldInvalid('firstName')">First name is required</span>
+          </div>
+          <div class="at-field">
+            <label class="at-label">Last Name *</label>
+            <input class="at-input" formControlName="lastName" placeholder="Verma">
+            <span class="at-error" *ngIf="isFieldInvalid('lastName')">Last name is required</span>
+          </div>
+          <div class="at-field sm:col-span-2">
+            <label class="at-label">Email *</label>
+            <input class="at-input" type="email" formControlName="email" placeholder="rahul@amazingtechnical.com">
+            <span class="at-error" *ngIf="isFieldInvalid('email')">Valid email is required</span>
+          </div>
+          <div class="at-field">
+            <label class="at-label">Phone *</label>
+            <input class="at-input" formControlName="phone" placeholder="9876543210">
+            <span class="at-error" *ngIf="isFieldInvalid('phone')">Valid 10-digit mobile required</span>
+          </div>
+          <div class="at-field">
+            <label class="at-label">Password *</label>
+            <div class="relative">
+              <input
+                class="at-input pr-14"
+                [type]="showPassword ? 'text' : 'password'"
+                formControlName="password"
+                placeholder="Password">
+              <button type="button" class="absolute right-3 top-2 text-xs text-primary-600 font-medium" (click)="showPassword = !showPassword">
+                {{ showPassword ? 'Hide' : 'Show' }}
+              </button>
+            </div>
+            <div class="grid grid-cols-3 gap-2 mt-2">
+              <div class="h-2 rounded-full" [class.bg-red-500]="passwordStrength >= 1" [class.bg-gray-100]="passwordStrength < 1"></div>
+              <div class="h-2 rounded-full" [class.bg-amber-400]="passwordStrength >= 2" [class.bg-gray-100]="passwordStrength < 2"></div>
+              <div class="h-2 rounded-full" [class.bg-emerald-500]="passwordStrength >= 3" [class.bg-gray-100]="passwordStrength < 3"></div>
+            </div>
+            <span class="at-hint">8+ chars, 1 uppercase, 1 number, 1 special symbol.</span>
+            <span class="at-error" *ngIf="isFieldInvalid('password')">Enter a strong valid password</span>
+          </div>
+        </div>
+
+        <div class="flex justify-end mt-6">
+          <button type="button" class="at-btn-primary" (click)="submitForm()" [disabled]="isSubmitting">
+            {{ isSubmitting ? 'Creating...' : '✅ Create User' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </ng-container>
+</div>

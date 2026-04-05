@@ -6,11 +6,16 @@ import com.amazing.technical.adminservice.setup.dto.CustomerRoleResponseDto;
 import com.amazing.technical.adminservice.setup.dto.CustomerServiceResponseDto;
 import com.amazing.technical.adminservice.setup.dto.RoleResponseDto;
 import com.amazing.technical.adminservice.setup.dto.ServiceCategoryResponseDto;
+import com.amazing.technical.adminservice.setup.dto.UserAssignedServiceDto;
+import com.amazing.technical.adminservice.setup.dto.UserResponseDto;
+import com.amazing.technical.adminservice.setup.dto.UserRoleResponseDto;
 import com.amazing.technical.adminservice.setup.entity.CustomerMain;
 import com.amazing.technical.adminservice.setup.entity.CustomerRole;
 import com.amazing.technical.adminservice.setup.entity.CustomerServiceMaster;
 import com.amazing.technical.adminservice.setup.entity.RoleMaster;
 import com.amazing.technical.adminservice.setup.entity.ServiceCategory;
+import com.amazing.technical.adminservice.setup.entity.UserMaster;
+import com.amazing.technical.adminservice.setup.entity.UserRoleAssignment;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,6 +28,7 @@ public final class SetupMapper {
 	public static CustomerMainResponseDto toResponse(CustomerMain entity) {
 		return new CustomerMainResponseDto(
 				entity.getCustomerId(),
+				entity.getCustomerCode(),
 				entity.getFirstName(),
 				entity.getLastName(),
 				entity.getEmail(),
@@ -93,6 +99,44 @@ public final class SetupMapper {
 				entity.getCustomer().getCompanyName(),
 				entity.getRole().getRoleId(),
 				entity.getRole().getRoleName(),
+				assignedServices,
+				entity.getAssignedAt(),
+				entity.getStatus());
+	}
+
+	public static UserResponseDto toResponse(UserMaster entity) {
+		return new UserResponseDto(
+				entity.getUserId(),
+				entity.getUserCode(),
+				entity.getFirstName(),
+				entity.getLastName(),
+				entity.getEmail(),
+				entity.getPhone(),
+				entity.getStatus(),
+				entity.getCreatedAt());
+	}
+
+	public static UserRoleResponseDto toResponse(UserRoleAssignment entity) {
+		List<UserAssignedServiceDto> assignedServices = entity.getServices().stream()
+				.map(service -> new UserAssignedServiceDto(
+						service.getCustomerServiceId(),
+						service.getServiceNumber(),
+						service.getServiceName(),
+						service.getServiceCategory().getCategoryName()))
+				.toList();
+
+		return new UserRoleResponseDto(
+				entity.getUserRoleId(),
+				entity.getUser().getUserId(),
+				entity.getUser().getUserCode(),
+				entity.getUser().getFirstName() + " " + entity.getUser().getLastName(),
+				entity.getRole().getRoleId(),
+				entity.getRole().getRoleName(),
+				entity.getRole().getRoleCode(),
+				entity.getCustomer().getCustomerId(),
+				entity.getCustomer().getCustomerCode(),
+				entity.getCustomer().getFirstName() + " " + entity.getCustomer().getLastName(),
+				entity.getCustomer().getCompanyName(),
 				assignedServices,
 				entity.getAssignedAt(),
 				entity.getStatus());

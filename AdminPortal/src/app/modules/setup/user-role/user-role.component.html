@@ -1,0 +1,183 @@
+<div class="at-page animate-fade-up">
+  <button class="at-back-btn" (click)="goBack()">← Back</button>
+  <div class="at-page-header">
+    <h1 class="at-page-title font-display">User Role Assignment</h1>
+    <p class="at-page-subtitle">Assign user, role, customer, and services from one screen</p>
+  </div>
+
+  <div class="at-success-state" *ngIf="isSubmitted && selectedUser && selectedRole && selectedCustomer">
+    <div class="at-success-icon">🎉</div>
+    <h2 class="at-success-title">User Role Assigned!</h2>
+    <div class="mx-auto max-w-2xl bg-white border border-gray-100 rounded-2xl p-6 text-left">
+      <div class="grid gap-4 md:grid-cols-3">
+        <div class="flex items-center gap-3">
+          <div class="at-avatar">{{ getInitials(selectedUser) }}</div>
+          <div>
+            <p class="font-medium text-gray-900">{{ selectedUser.firstName }} {{ selectedUser.lastName }}</p>
+            <p class="text-xs text-primary-600 font-mono">{{ selectedUser.userCode }}</p>
+          </div>
+        </div>
+        <div>
+          <p class="text-xs text-gray-400 mb-1">Role</p>
+          <span class="at-badge at-badge-purple">{{ selectedRole.roleName }}</span>
+        </div>
+        <div>
+          <p class="text-xs text-gray-400 mb-1">Customer</p>
+          <p class="font-medium text-gray-900">{{ selectedCustomer.companyName }}</p>
+          <p class="text-xs text-teal-600 font-mono">{{ selectedCustomer.customerCode }}</p>
+        </div>
+      </div>
+      <div class="mt-4 flex flex-wrap gap-2">
+        <span *ngFor="let service of assignedServices" class="at-badge at-badge-blue">{{ service.serviceName }}</span>
+      </div>
+    </div>
+    <div class="flex gap-3 justify-center mt-6">
+      <button class="at-btn-primary" (click)="resetForm()">Assign Another</button>
+      <button class="at-btn-outline" (click)="goBack()">Back to Setup</button>
+    </div>
+  </div>
+
+  <ng-container *ngIf="!isSubmitted">
+    <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+      <div class="xl:col-span-4 space-y-4">
+        <div class="at-card-flat">
+          <p class="at-section-title">👤 Select User</p>
+          <div class="at-search mb-3">
+            <span class="at-search-icon">🔍</span>
+            <input type="text" placeholder="Search users..." [ngModel]="userSearchQuery" (ngModelChange)="searchUsers($event)">
+          </div>
+          <div class="space-y-2 max-h-48 overflow-y-auto" *ngIf="!selectedUser">
+            <div *ngFor="let user of filteredUsers" class="at-service-row" (click)="selectUser(user)">
+              <div class="at-avatar">{{ getInitials(user) }}</div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-gray-900 truncate">{{ user.firstName }} {{ user.lastName }}</p>
+                <p class="text-xs text-primary-600 font-mono">{{ user.userCode }}</p>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="selectedUser" class="flex items-center gap-3 p-3 bg-primary-50 rounded-xl border border-primary-100">
+            <div class="at-avatar">{{ getInitials(selectedUser) }}</div>
+            <div class="flex-1">
+              <p class="text-sm font-semibold text-gray-900">{{ selectedUser.firstName }} {{ selectedUser.lastName }}</p>
+              <p class="text-xs text-primary-600 font-mono">{{ selectedUser.userCode }}</p>
+            </div>
+            <button class="text-gray-300 hover:text-gray-500 text-sm" (click)="selectedUser = null">✕</button>
+          </div>
+        </div>
+
+        <div class="at-card-flat">
+          <p class="at-section-title">🔐 Assign Role</p>
+          <div class="space-y-2">
+            <label
+              *ngFor="let role of allRoles"
+              class="flex items-start gap-3 p-3 border rounded-xl cursor-pointer transition-all duration-150"
+              [class.border-primary-300]="selectedRole?.id === role.id"
+              [class.bg-primary-50]="selectedRole?.id === role.id"
+              [class.border-gray-100]="selectedRole?.id !== role.id"
+              (click)="selectRole(role)">
+              <input type="radio" [checked]="selectedRole?.id === role.id" class="mt-0.5 accent-primary-600">
+              <div>
+                <p class="text-sm font-medium text-gray-900">{{ role.roleName }}</p>
+                <span class="font-mono text-xs text-gray-400">{{ role.roleCode }}</span>
+                <div class="flex flex-wrap gap-1 mt-1">
+                  <span *ngFor="let p of role.permissions" class="at-badge at-badge-purple" style="font-size:10px">{{ p }}</span>
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="at-card-flat">
+          <p class="at-section-title">🏢 Assign Customer</p>
+          <div class="at-search mb-3">
+            <span class="at-search-icon">🔍</span>
+            <input type="text" placeholder="Search customers..." [ngModel]="customerSearchQuery" (ngModelChange)="searchCustomers($event)">
+          </div>
+          <div class="space-y-2 max-h-48 overflow-y-auto" *ngIf="!selectedCustomer">
+            <div *ngFor="let customer of filteredCustomers" class="at-service-row" (click)="selectCustomer(customer)">
+              <div class="at-avatar bg-teal-100 text-teal-700">{{ getInitials(customer) }}</div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-gray-900 truncate">{{ customer.companyName }}</p>
+                <p class="text-xs text-teal-600 font-mono">{{ customer.customerCode }}</p>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="selectedCustomer" class="flex items-center gap-3 p-3 bg-teal-50 rounded-xl border border-teal-100">
+            <div class="at-avatar bg-teal-100 text-teal-700">{{ getInitials(selectedCustomer) }}</div>
+            <div class="flex-1">
+              <p class="text-sm font-semibold text-gray-900">{{ selectedCustomer.companyName }}</p>
+              <p class="text-xs text-teal-600 font-mono">{{ selectedCustomer.customerCode }}</p>
+            </div>
+            <button class="text-gray-300 hover:text-gray-500 text-sm" (click)="selectedCustomer = null">✕</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="xl:col-span-8 space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" *ngIf="selectedCustomer">
+          <div class="at-card-flat">
+            <p class="at-section-title">Available Services</p>
+            <div class="space-y-2 max-h-96 overflow-y-auto">
+              <div *ngFor="let service of getAvailableServices()" class="at-service-row" (click)="assignService(service)">
+                <span class="at-badge-number">#{{ service.serviceNumber }}</span>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-900">{{ service.serviceName }}</p>
+                  <span class="at-badge at-badge-blue">{{ service.categoryName }}</span>
+                </div>
+                <button class="text-primary-500 text-lg">+</button>
+              </div>
+              <div class="at-empty-state py-8" *ngIf="getAvailableServices().length === 0">
+                <p class="text-sm text-gray-300">No services available</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="at-card-flat">
+            <p class="at-section-title">Assigned Services</p>
+            <div class="space-y-2 max-h-96 overflow-y-auto">
+              <div *ngFor="let service of assignedServices" class="at-service-row border-emerald-100 bg-emerald-50/30">
+                <span class="at-badge-number">#{{ service.serviceNumber }}</span>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-900">{{ service.serviceName }}</p>
+                  <span class="at-badge at-badge-active">{{ service.categoryName }}</span>
+                </div>
+                <button class="text-red-400 text-sm" (click)="removeService(service.serviceId)">✕</button>
+              </div>
+              <div class="at-empty-state py-8" *ngIf="assignedServices.length === 0">
+                <p class="text-sm text-gray-300">No services assigned yet</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="at-card bg-gray-50 border-gray-100">
+          <p class="at-section-title">Summary</p>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4 text-center">
+            <div>
+              <p class="text-xs text-gray-400 mb-1">User</p>
+              <p class="text-sm font-medium text-gray-900 truncate">{{ selectedUser?.userCode || '—' }}</p>
+            </div>
+            <div>
+              <p class="text-xs text-gray-400 mb-1">Role</p>
+              <p class="text-sm font-medium text-gray-900 truncate">{{ selectedRole?.roleName || '—' }}</p>
+            </div>
+            <div>
+              <p class="text-xs text-gray-400 mb-1">Customer</p>
+              <p class="text-sm font-medium text-gray-900 truncate">{{ selectedCustomer?.customerCode || '—' }}</p>
+            </div>
+            <div>
+              <p class="text-xs text-gray-400 mb-1">Services</p>
+              <p class="text-sm font-medium text-gray-900">{{ assignedServices.length }}</p>
+            </div>
+          </div>
+          <div class="flex gap-3 justify-end">
+            <button class="at-btn-ghost" (click)="resetForm()">Reset</button>
+            <button class="at-btn-primary" (click)="submitAssignment()" [disabled]="!canSubmit || isSubmitting">
+              {{ isSubmitting ? 'Saving...' : '💾 Save Assignment' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

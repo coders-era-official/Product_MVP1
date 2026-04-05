@@ -41,5 +41,17 @@ export class SetupHomeComponent {
       icon: '🔗',
       link: '/setup/customer-role',
     },
+    {
+      title: 'User',
+      body: 'Create and manage system users with login access.',
+      icon: '👤',
+      link: '/setup/user',
+    },
+    {
+      title: 'User Role',
+      body: 'Assign role, customer and services to a user.',
+      icon: '🔑',
+      link: '/setup/user-role',
+    },
   ] as const;
 }

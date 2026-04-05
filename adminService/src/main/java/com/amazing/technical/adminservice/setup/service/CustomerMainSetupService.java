@@ -36,6 +36,7 @@ public class CustomerMainSetupService {
 			throw new DataIntegrityViolationException("Customer email already exists: " + request.email());
 		}
 		CustomerMain entity = new CustomerMain();
+		entity.setCustomerCode(nextCustomerCode());
 		apply(entity, request);
 		return SetupMapper.toResponse(customerMainRepository.save(entity));
 	}
@@ -80,5 +81,19 @@ public class CustomerMainSetupService {
 		entity.setPlanName(request.planName().trim());
 		entity.setBillingCycle(request.billingCycle().trim());
 		entity.setStatus(request.status().trim());
+	}
+
+	private String nextCustomerCode() {
+		CustomerMain latest = customerMainRepository.findTopByOrderByCustomerCodeDesc();
+		long nextNumber = 1L;
+		if (latest != null && latest.getCustomerCode() != null && latest.getCustomerCode().startsWith("CUST-")) {
+			nextNumber = Long.parseLong(latest.getCustomerCode().substring(5)) + 1;
+		}
+		String candidate = "CUST-" + String.format("%06d", nextNumber);
+		while (customerMainRepository.existsByCustomerCode(candidate)) {
+			nextNumber += 1;
+			candidate = "CUST-" + String.format("%06d", nextNumber);
+		}
+		return candidate;
 	}
 }

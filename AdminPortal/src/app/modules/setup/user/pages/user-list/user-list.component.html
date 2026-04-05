@@ -1,0 +1,73 @@
+<div class="at-page animate-fade-up">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <button class="at-back-btn" (click)="goBack()">← Back</button>
+      <h1 class="at-page-title font-display">All Users</h1>
+      <p class="at-page-subtitle">{{ filteredUsers.length }} user(s) found</p>
+    </div>
+    <button class="at-btn-primary" routerLink="/setup/user/form">+ Create User</button>
+  </div>
+
+  <div class="at-search max-w-sm mb-4">
+    <span class="at-search-icon">🔍</span>
+    <input type="text" placeholder="Search users..." (input)="onSearch($any($event.target).value)">
+  </div>
+
+  <div class="at-empty-state" *ngIf="filteredUsers.length === 0">
+    <div class="text-4xl mb-3">👤</div>
+    <h3 class="text-base font-medium text-gray-900 mb-1">No users found</h3>
+    <p class="text-sm text-gray-400">Try another search or create a new user.</p>
+  </div>
+
+  <div class="at-card-flat p-0 overflow-hidden" *ngIf="filteredUsers.length > 0">
+    <table class="at-table">
+      <thead>
+        <tr>
+          <th>User Code</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Status</th>
+          <th>Created</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of filteredUsers">
+          <td>
+            <span class="font-mono text-xs font-semibold text-primary-600 bg-primary-50 px-2 py-0.5 rounded-lg">
+              {{ user.userCode }}
+            </span>
+          </td>
+          <td>
+            <div class="flex items-center gap-3">
+              <div class="at-avatar">{{ getInitials(user) }}</div>
+              <span class="font-medium text-gray-900">{{ user.firstName }} {{ user.lastName }}</span>
+            </div>
+          </td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.phone }}</td>
+          <td>
+            <span class="at-badge" [class.at-badge-active]="user.status === 'Active'" [class.at-badge-inactive]="user.status === 'Inactive'">
+              {{ user.status }}
+            </span>
+          </td>
+          <td>{{ user.createdAt | date:'mediumDate' }}</td>
+          <td>
+            <button
+              class="text-xs px-3 py-1.5 rounded-lg border transition-all duration-150"
+              [class.bg-red-50]="user.status === 'Active'"
+              [class.text-red-600]="user.status === 'Active'"
+              [class.border-red-100]="user.status === 'Active'"
+              [class.bg-green-50]="user.status === 'Inactive'"
+              [class.text-green-600]="user.status === 'Inactive'"
+              [class.border-green-100]="user.status === 'Inactive'"
+              (click)="toggleStatus(user)">
+              {{ user.status === 'Active' ? 'Deactivate' : 'Activate' }}
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

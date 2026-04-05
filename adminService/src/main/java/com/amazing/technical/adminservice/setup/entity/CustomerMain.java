@@ -25,6 +25,9 @@ public class CustomerMain {
 	@Column(name = "FIRST_NAME", nullable = false, length = 80)
 	private String firstName;
 
+	@Column(name = "CUSTOMER_CODE", unique = true, length = 20)
+	private String customerCode;
+
 	@Column(name = "LAST_NAME", nullable = false, length = 80)
 	private String lastName;
 
@@ -103,6 +106,14 @@ public class CustomerMain {
 
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
+	}
+
+	public String getCustomerCode() {
+		return customerCode;
+	}
+
+	public void setCustomerCode(String customerCode) {
+		this.customerCode = customerCode;
 	}
 
 	public String getLastName() {

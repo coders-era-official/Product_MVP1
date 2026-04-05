@@ -14,7 +14,7 @@ export class CustomerService {
     return this.http.get<Customer[]>(this.apiUrl);
   }
 
-  getCustomer(id: number): Observable<Customer> {
+  getCustomer(id: number | string): Observable<Customer> {
     return this.http.get<Customer>(`${this.apiUrl}/${id}`);
   }
 
@@ -22,11 +22,11 @@ export class CustomerService {
     return this.http.post<Customer>(this.apiUrl, payload);
   }
 
-  updateCustomer(id: number, payload: CustomerPayload): Observable<Customer> {
+  updateCustomer(id: number | string, payload: CustomerPayload): Observable<Customer> {
     return this.http.put<Customer>(`${this.apiUrl}/${id}`, payload);
   }
 
-  deleteCustomer(id: number): Observable<void> {
+  deleteCustomer(id: number | string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

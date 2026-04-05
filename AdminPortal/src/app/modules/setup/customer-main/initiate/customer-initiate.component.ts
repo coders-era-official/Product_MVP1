@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CustomerService } from '../../../../core/services/customer.service';
-import type { CustomerPayload } from '../models/customer.model';
+import type { Customer, CustomerPayload } from '../models/customer.model';
 
 interface PlanOption {
   name: string;
@@ -24,6 +24,7 @@ export class CustomerInitiateComponent implements OnInit {
   isSubmitting = false;
   isSubmitted = false;
   errorMessage = '';
+  submittedCustomer: Customer | null = null;
 
   readonly steps = [
     { label: 'Basic Info', icon: '👤' },
@@ -142,9 +143,10 @@ export class CustomerInitiateComponent implements OnInit {
     };
 
     this.customerService.initiateCustomer(payload).subscribe({
-      next: () => {
+      next: (customer) => {
         this.isSubmitting = false;
         this.isSubmitted = true;
+        this.submittedCustomer = customer;
       },
       error: () => {
         this.isSubmitting = false;
@@ -166,6 +168,7 @@ export class CustomerInitiateComponent implements OnInit {
     this.isSubmitting = false;
     this.errorMessage = '';
     this.currentStep = 0;
+    this.submittedCustomer = null;
     this.basicInfoForm.reset();
     this.companyForm.reset();
     this.addressForm.reset({ country: 'India' });

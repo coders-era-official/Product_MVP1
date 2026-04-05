@@ -7,7 +7,7 @@ export interface AssignedService {
 
 export interface CustomerRoleAssignment {
   id: number;
-  customerId: number;
+  customerId: number | string;
   customerName: string;
   companyName: string;
   roleId: number;
@@ -18,7 +18,7 @@ export interface CustomerRoleAssignment {
 }
 
 export interface CustomerRolePayload {
-  customerId: number;
+  customerId: number | string;
   roleId: number;
   serviceIds: number[];
   status: CustomerRoleAssignment['status'];
